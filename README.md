@@ -58,8 +58,7 @@ the application's `config.yml` file:
 
     $video = new Video(
         'http://www.youtube.com/watch?v=G8IozVfph7I&feature=channel_page',
-        'http://i4.ytimg.com/vi/G8IozVfph7I/default.jpg',
-        'flash'
+        'http://i4.ytimg.com/vi/G8IozVfph7I/default.jpg'
     );
 
     $userAction->addMediaItem($video);
