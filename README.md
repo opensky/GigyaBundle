@@ -30,8 +30,8 @@ Enable loading of the Share service by adding the following to
 the application's `config.yml` file:
 
     gigya:
-        apiKey: xxxx
         socializer:
+            api_key: xxxxxx
             namespace: MyJavaScriptCompatibleVariableNameWithNoSpaces
 
 #### Controller
