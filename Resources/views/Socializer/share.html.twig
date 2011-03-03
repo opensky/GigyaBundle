@@ -1,5 +1,6 @@
 {#
  # @param string userActionKey
+ # @param string enabledProviders
  # @param string operationMode
  # @param string snapToElementID
  # @param string onError
@@ -25,7 +26,9 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
         var conf = {
             APIKey: '{{ apiKey }}'
-            ,enabledProviders: 'facebook,twitter,yahoo,messenger,google,linkedin'
+            {% if enabledProviders %}
+            ,enabledProviders: '{{ enabledProviders }}'
+            {% endif %}
             ,cid: '{{ userActionKey }}'
         };
 

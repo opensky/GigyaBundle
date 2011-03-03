@@ -75,13 +75,14 @@ With twig:
     <div>
         {% include "GigyaBundle:Socializer:share.html.twig" with {
             'userActionKey' : 'my_test_key',
-            'operationMode' : 'simpleShare',
+            'enabledProviders' : 'facebook,twitter,yahoo,messenger,google,linkedin',
+            'operationMode' : 'multiSelect',
             'snapToElementID' : 'btnShare',
             'onError': null,
             'onSendDone': null,
             'context': null,
-            'showMoreButton' : 'true',
-            'showEmailButton' : 'true'
+            'showMoreButton' : 'false',
+            'showEmailButton' : 'false'
         }
         %}
         <input type=button id="btnShare" onclick="javascript:{{ gigya_socializer.getShareFunctionName('my_test_key') }}('simpleShare')" value="Simple Share" />
