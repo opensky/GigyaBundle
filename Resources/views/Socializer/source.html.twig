@@ -1,0 +1,8 @@
+{% set apiKey = gigya_socializer.apiKey %}
+<script type="text/javascript">
+(function() {
+    var script = document.createElement('script'); script.type = 'text/javascript';
+    script.src = ('https:' == document.location.protocol ? 'https://www' : 'http://cdn') + '.gigya.com/JS/socialize.js?apikey={{ apiKey }}';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+})();
+</script>

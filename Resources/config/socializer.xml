@@ -1,0 +1,27 @@
+<container xmlns="http://www.symfony-project.org/schema/dic/services"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.symfony-project.org/schema/dic/services http://www.symfony-project.org/schema/dic/services/services-1.0.xsd">
+
+	<parameters>
+        <parameter key="gigya.socializer.api_key" type="string" />
+		<parameter key="gigya.socializer.namespace" type="string" />
+	</parameters>
+
+	<services>
+		<service id="gigya.socializer" class="AntiMattr\GigyaBundle\Socializer">
+            <argument>%gigya.socializer.api_key%</argument>
+			<argument>%gigya.socializer.namespace%</argument>
+		</service>
+
+		<service id="templating.helper.gigya_socializer" class="AntiMattr\GigyaBundle\Helper\SocializerHelper">
+			<tag name="templating.helper" alias="gigya_socializer" />
+			<argument type="service" id="gigya.socializer" />
+		</service>
+
+		<service id="twig.extension.gigya_socializer" class="AntiMattr\GigyaBundle\Extension\SocializerExtension">
+			<tag name="twig.extension" />
+			<argument type="service" id="templating.helper.gigya_socializer" />
+		</service>
+	</services>
+
+</container>
