@@ -45,7 +45,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
         {% endif %}
 
         {% if userAction.description %}
-            userAction.setDescription('{{ userAction.description | escape('js') }}');
+            userAction.setDescription('{{ userAction.description }}');
         {% endif %}
 
         {% if userAction.linkBack %}
