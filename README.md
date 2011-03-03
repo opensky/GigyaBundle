@@ -85,5 +85,5 @@ With twig:
             'showEmailButton' : 'false'
         }
         %}
-        <input type=button id="btnShare" onclick="javascript:{{ gigya_socializer.getShareFunctionName('my_test_key') }}('simpleShare')" value="Simple Share" />
+        <input type=button id="btnShare" onclick="javascript:{{ gigya_socializer.getShareFunctionName('my_test_key') }}()" value="Multi Select" />
     </div>
