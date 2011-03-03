@@ -67,7 +67,7 @@ the application's `config.yml` file:
 
 #### View
 
-Include the Gigya source template in the `head` tag of your layout.
+Include the Gigya source template in the `head` tag of your layout or directly before the closing `</body>` tag (this implementation supports lazy loading).
 
 With twig:
 
