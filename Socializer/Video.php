@@ -2,41 +2,16 @@
 
 namespace AntiMattr\GigyaBundle\Socializer;
 
-class Video implements MediaItemInterface
+class Video extends AbstractMediaItem
 {
     private $previewImageUrl;
-    private $src;
-    private $type;
 
-    public function __construct($src, $previewImageUrl, $type)
+    public function __construct($src, $previewImageUrl, $href = null)
     {
-        $this->previewImageUrl = (string) $previewImageUrl;
-        $this->src = (string) $src;
-        $this->type = (string) $type;
-    }
-
-    /**
-     * @return array $video
-     */
-    public function toArray()
-    {
-        $array = array();
-        if ($previewImageUrl = $this->getPreviewImageUrl()) {
-            $array['previewImageUrl'] = $previewImageUrl;
-        }
-        if ($src = $this->getSrc()) {
-            $array['src'] = $src;
-        }
-        $array['type'] = $this->getType();
-        return $array;
-    }
-
-    /**
-     * @return json $video
-     */
-    public function toJson()
-    {
-        return json_encode($this->toArray());
+        $this->href = $href;
+        $this->previewImageUrl = $previewImageUrl;
+        $this->src = $src;
+        $this->type = self::VIDEO;
     }
 
     /**
@@ -48,18 +23,21 @@ class Video implements MediaItemInterface
     }
 
     /**
-     * @return string $src
+     * @return array $video
      */
-    public function getSrc()
+    protected function toArray()
     {
-        return $this->src;
-    }
-
-    /**
-     * @return string $string
-     */
-    public function getType()
-    {
-        return $this->type;
+        $array = array();
+        if ($href = $this->getHref()) {
+            $array['href'] = $href;
+        }
+        if ($previewImageUrl = $this->getPreviewImageUrl()) {
+            $array['previewImageUrl'] = $previewImageUrl;
+        }
+        if ($src = $this->getSrc()) {
+            $array['src'] = $src;
+        }
+        $array['type'] = $this->getType();
+        return $array;
     }
 }

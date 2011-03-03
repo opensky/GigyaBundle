@@ -4,12 +4,9 @@ namespace AntiMattr\GigyaBundle\Socializer;
 
 interface MediaItemInterface
 {
-    const FLASH = 'flash';
-
-    /**
-     * @return array $mediaItem
-     */
-    public function toArray();
+    const IMAGE = 'image';
+    const AUDIO = 'mp3';
+    const VIDEO = 'flash';
 
     /**
      * @return json $mediaItem

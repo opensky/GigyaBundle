@@ -17,14 +17,14 @@ class VideoTest extends \PHPUnit_Framework_TestCase
         parent::setup();
         $this->src = 'foo';
         $this->previewImageUrl = 'bar';
-        $this->type = 'flash';
-        $this->video = new Video($this->src, $this->previewImageUrl, $this->type);
+        $this->href = 'value';
+        $this->video = new StubVideo($this->src, $this->previewImageUrl, $this->href);
     }
 
     public function tearDown()
     {
         $this->video = null;
-        $this->type = 'flash';
+        $this->href = null;
         $this->previewImageUrl = null;
         $this->src = null;
         parent::tearDown();
@@ -34,22 +34,31 @@ class VideoTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals($this->src, $this->video->getSrc());
         $this->assertEquals($this->previewImageUrl, $this->video->getPreviewImageUrl());
-        $this->assertEquals($this->type, $this->video->getType());
+        $this->assertEquals($this->href, $this->video->getHref());
     }
 
     public function testGetType()
     {
-        $this->assertEquals(MediaItemInterface::FLASH, $this->video->getType());
+        $this->assertEquals(MediaItemInterface::VIDEO, $this->video->getType());
     }
 
     public function testToArray()
     {
         $expectedArray = array(
+            'href' => $this->href,
             'previewImageUrl' => $this->previewImageUrl,
             'src' => $this->src,
-            'type' => MediaItemInterface::FLASH
+            'type' => MediaItemInterface::VIDEO
         );
 
-        $this->assertEquals($expectedArray, $this->video->toArray());
+        $this->assertEquals($expectedArray, $this->video->internalToArray());
+    }
+}
+
+class StubVideo extends Video
+{
+    public function internalToArray()
+    {
+        return $this->toArray();
     }
 }
