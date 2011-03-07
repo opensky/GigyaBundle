@@ -9,10 +9,10 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="../../autoload.php"
+         bootstrap="../../../autoload.php"
 >
     <testsuites>
-        <testsuite name="AntiMattr GigyaBundle Test Suite">
+        <testsuite name="OpenSky GigyaBundle Test Suite">
             <directory>./Tests/</directory>
         </testsuite>
     </testsuites>

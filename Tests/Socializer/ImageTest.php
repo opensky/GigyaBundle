@@ -1,9 +1,9 @@
 <?php
 
-namespace AntiMattr\GigyaBundle\Tests\Socializer;
+namespace OpenSky\Bundle\GigyaBundle\Tests\Socializer;
 
-use AntiMattr\GigyaBundle\Socializer\MediaItemInterface;
-use AntiMattr\GigyaBundle\Socializer\Image;
+use OpenSky\Bundle\GigyaBundle\Socializer\MediaItemInterface;
+use OpenSky\Bundle\GigyaBundle\Socializer\Image;
 
 class ImageTest extends \PHPUnit_Framework_TestCase
 {

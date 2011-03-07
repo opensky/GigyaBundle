@@ -1,9 +1,9 @@
 <?php
 
-namespace AntiMattr\GigyaBundle\Tests\Socializer;
+namespace OpenSky\Bundle\GigyaBundle\Tests\Socializer;
 
-use AntiMattr\GigyaBundle\Socializer\MediaItemInterface;
-use AntiMattr\GigyaBundle\Socializer\Video;
+use OpenSky\Bundle\GigyaBundle\Socializer\MediaItemInterface;
+use OpenSky\Bundle\GigyaBundle\Socializer\Video;
 
 class VideoTest extends \PHPUnit_Framework_TestCase
 {

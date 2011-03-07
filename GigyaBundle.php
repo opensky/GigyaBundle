@@ -1,6 +1,6 @@
 <?php
 
-namespace AntiMattr\GigyaBundle;
+namespace OpenSky\Bundle\GigyaBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle as BaseBundle;
 

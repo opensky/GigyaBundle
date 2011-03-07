@@ -1,8 +1,8 @@
 <?php
 
-namespace AntiMattr\GigyaBundle\Tests\Socializer;
+namespace OpenSky\Bundle\GigyaBundle\Tests\Socializer;
 
-use AntiMattr\GigyaBundle\Socializer\ActionLink;
+use OpenSky\Bundle\GigyaBundle\Socializer\ActionLink;
 
 class ActionLinkTest extends \PHPUnit_Framework_TestCase
 {

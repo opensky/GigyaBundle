@@ -7,7 +7,7 @@ to your application. The first service included is the Share Plugin.
 
 ### Initialize Submodule
 
-    git submodule add git@github.com:antimattr/GigyaBundle.git src/AntiMattr/GigyaBundle
+    git submodule add git@github.com:opensky/GigyaBundle.git src/OpenSky/Bundle/GigyaBundle
 
 ### Application Kernel
 
@@ -16,7 +16,7 @@ Add GoogleBundle to the `registerBundles()` method of your application kernel:
     public function registerBundles()
     {
         return array(
-            new AntiMattr\GigyaBundle\GigyaBundle(),
+            new OpenSky\GigyaBundle\GigyaBundle(),
         );
     }
 
@@ -36,9 +36,9 @@ the application's `config.yml` file:
 
 #### Controller
 
-    use AntiMattr\GigyaBundle\Socializer\ActionLink;
-    use AntiMattr\GigyaBundle\Socializer\UserAction;
-    use AntiMattr\GigyaBundle\Socializer\Video;
+    use OpenSky\Bundle\GigyaBundle\Socializer\ActionLink;
+    use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
+    use OpenSky\Bundle\GigyaBundle\Socializer\Video;
 
 
     $socializer = $this->container->get('gigya.socializer');

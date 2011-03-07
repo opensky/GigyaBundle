@@ -1,10 +1,10 @@
 <?php
 
-namespace AntiMattr\GigyaBundle\Tests\Socializer;
+namespace OpenSky\Bundle\GigyaBundle\Tests\Socializer;
 
-use AntiMattr\GigyaBundle\Socializer\ActionLink;
-use AntiMattr\GigyaBundle\Socializer\UserAction;
-use AntiMattr\GigyaBundle\Socializer\Video;
+use OpenSky\Bundle\GigyaBundle\Socializer\ActionLink;
+use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
+use OpenSky\Bundle\GigyaBundle\Socializer\Video;
 
 class UserActionTest extends \PHPUnit_Framework_TestCase
 {

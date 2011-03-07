@@ -1,8 +1,8 @@
 <?php
 
-namespace AntiMattr\GigyaBundle\Extension;
+namespace OpenSky\Bundle\GigyaBundle\Extension;
 
-use AntiMattr\GigyaBundle\Helper\SocializerHelper;
+use OpenSky\Bundle\GigyaBundle\Helper\SocializerHelper;
 
 class SocializerExtension extends \Twig_Extension
 {

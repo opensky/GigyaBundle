@@ -1,9 +1,9 @@
 <?php
 
-namespace AntiMattr\GigyaBundle\Tests;
+namespace OpenSky\Bundle\GigyaBundle\Tests;
 
-use AntiMattr\GigyaBundle\Socializer;
-use AntiMattr\GigyaBundle\Socializer\UserAction;
+use OpenSky\Bundle\GigyaBundle\Socializer;
+use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 
 class SocializerTest extends \PHPUnit_Framework_TestCase
 {

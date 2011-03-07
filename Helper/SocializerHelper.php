@@ -1,8 +1,8 @@
 <?php
 
-namespace AntiMattr\GigyaBundle\Helper;
+namespace OpenSky\Bundle\GigyaBundle\Helper;
 
-use AntiMattr\GigyaBundle\Socializer;
+use OpenSky\Bundle\GigyaBundle\Socializer;
 use Symfony\Component\Templating\Helper\Helper;
 
 class SocializerHelper extends Helper

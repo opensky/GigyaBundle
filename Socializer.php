@@ -1,8 +1,8 @@
 <?php
 
-namespace AntiMattr\GigyaBundle;
+namespace OpenSky\Bundle\GigyaBundle;
 
-use AntiMattr\GigyaBundle\Socializer\UserAction;
+use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 
 class Socializer
 {

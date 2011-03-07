@@ -8,17 +8,17 @@
 	</parameters>
 
 	<services>
-		<service id="gigya.socializer" class="AntiMattr\GigyaBundle\Socializer">
+		<service id="gigya.socializer" class="OpenSky\Bundle\GigyaBundle\Socializer">
             <argument>%gigya.socializer.api_key%</argument>
 			<argument>%gigya.socializer.namespace%</argument>
 		</service>
 
-		<service id="templating.helper.gigya_socializer" class="AntiMattr\GigyaBundle\Helper\SocializerHelper">
+		<service id="templating.helper.gigya_socializer" class="OpenSky\Bundle\GigyaBundle\Helper\SocializerHelper">
 			<tag name="templating.helper" alias="gigya_socializer" />
 			<argument type="service" id="gigya.socializer" />
 		</service>
 
-		<service id="twig.extension.gigya_socializer" class="AntiMattr\GigyaBundle\Extension\SocializerExtension">
+		<service id="twig.extension.gigya_socializer" class="OpenSky\Bundle\GigyaBundle\Extension\SocializerExtension">
 			<tag name="twig.extension" />
 			<argument type="service" id="templating.helper.gigya_socializer" />
 		</service>

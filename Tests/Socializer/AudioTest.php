@@ -1,9 +1,9 @@
 <?php
 
-namespace AntiMattr\GigyaBundle\Tests\Socializer;
+namespace OpenSky\Bundle\GigyaBundle\Tests\Socializer;
 
-use AntiMattr\GigyaBundle\Socializer\MediaItemInterface;
-use AntiMattr\GigyaBundle\Socializer\Audio;
+use OpenSky\Bundle\GigyaBundle\Socializer\MediaItemInterface;
+use OpenSky\Bundle\GigyaBundle\Socializer\Audio;
 
 class AudioTest extends \PHPUnit_Framework_TestCase
 {

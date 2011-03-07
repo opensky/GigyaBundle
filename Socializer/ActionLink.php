@@ -1,6 +1,6 @@
 <?php
 
-namespace AntiMattr\GigyaBundle\Socializer;
+namespace OpenSky\Bundle\GigyaBundle\Socializer;
 
 class ActionLink
 {

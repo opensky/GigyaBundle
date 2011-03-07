@@ -1,6 +1,6 @@
 <?php
 
-namespace AntiMattr\GigyaBundle\DependencyInjection;
+namespace OpenSky\Bundle\GigyaBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
