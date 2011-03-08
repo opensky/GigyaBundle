@@ -58,10 +58,10 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
         var newUser = false;
         var hasEmail = false;
+        var identities = eventObj.user.identities;
 
         // Check if user exists
-        {{ namespace }}.getLocalUser();
-
+        var localUser = {{ namespace }}.getLocalUser(identities);
 
         // If user exists, map provider UID to user
 
@@ -69,7 +69,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
 
         var hasEmail = false;
-        if (newUser && hasEmail && typeof localUserUID != 'undefined' && typeof dateStr != 'undefined' && typeof localSignature != 'undefined') {
+        if (newUser && typeof localUserUID != 'undefined' && typeof dateStr != 'undefined' && typeof localSignature != 'undefined') {
             // 1. Register user 
             // 2. Store new user in DB
             // 3. link site account to social network identity
@@ -104,8 +104,23 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
     }
     {% endif %}
 
-    {{ namespace }}.getLocalUser = function() {
-        
+    {{ namespace }}.getLocalUser = function(identities) {
+        var input = {
+            'identities': identities
+        };
+
+        $.ajax({
+            type: "POST",
+            url: {{ path('gigya_login') }},
+            data: input,
+            dataType: 'json',
+            success: function(data) {
+                if (typeof console != 'undefined') console.log("Gigya:\n-- get Local User == success");
+            },
+            error: function(request, textStatus, errorThrown) {
+                if (typeof console != 'undefined') console.log("Gigya:\n-- get Local User == error\n -- status == "+ textStatus);
+            }
+        });        
     }
 })(jQuery);
 </script>
