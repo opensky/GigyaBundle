@@ -1,0 +1,3 @@
+gigya_user_register:
+    pattern:      /user/register-by-email
+    defaults:     { _controller: GigyaBundle:Example:registerByEmail }

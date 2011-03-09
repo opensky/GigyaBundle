@@ -3,6 +3,7 @@
 namespace OpenSky\Bundle\GigyaBundle\Document;
 
 use OpenSky\Bundle\GigyaBundle\User\AbstractUser;
+use Symfony\Component\Security\Core\User\AccountInterface;
 
 /**
  * @mongodb:Document(
@@ -21,4 +22,8 @@ class User extends AbstractUser
     /** @mongodb:String */
     protected $username;
 
+    public function equals(AccountInterface $accountInterface)
+    {
+
+    }
 }

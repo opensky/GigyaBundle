@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenSky\GigyaBundle\User;
+namespace OpenSky\Bundle\GigyaBundle\User;
 
 use Symfony\Component\Security\Core\Role\RoleInterface;
 use Symfony\Component\Security\Core\User\AccountInterface;
@@ -58,9 +58,9 @@ abstract class AbstractUser implements AccountInterface
     /**
      * {@inheritDoc}
      */
-    public function equals(AccountInterface $account);
+    public function equals(AccountInterface $account)
     {
-
+        return true;
     }
 
     /**

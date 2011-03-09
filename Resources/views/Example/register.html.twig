@@ -1,0 +1,26 @@
+{# 
+ # @param string $provider
+ # @param object $form
+ #}
+
+{% extends "GigyaBundle:Layout:empty.html.twig" %}
+
+{% block _content %}
+	<section>
+        <h1>Success! You are logged in with {{ provider }}</h1>
+        <h3>This is the first time you have used {{ provider }} to login. Please provide your email so we can sync your account.</h3>
+        <form action="{{ path("gigya_user_register") }}" {{ form_enctype(form) }} method="post">
+            {{ form_errors(form) }}
+            <ul>
+                <li>
+                    {{ form_errors(form.email) }}
+                    {{ form_label(form.email) }}
+                    {{ form_field(form.email) }}
+                </li>
+                <li>
+                    <input type="submit" value="Save" />
+                </li>
+            </ul>
+        </form>
+	</section>
+{% endblock %}
