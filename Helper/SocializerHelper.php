@@ -31,6 +31,14 @@ class SocializerHelper extends Helper
     }
 
     /**
+     * @return string $loginFunctionName
+     */
+    public function getLoginFunctionName()
+    {
+        return $this->socializer->getNamespace().".showLoginUI";
+    }
+
+    /**
      * @param string $key
      * @return string $shareFunctionName
      */

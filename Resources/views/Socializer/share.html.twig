@@ -22,7 +22,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
 {{ shareFunctionName }} = function() {
     if (typeof gigya != 'undefined') {
-        if (typeof console != 'undefined') console.log('Gigya instantiated');
+        if (typeof console != 'undefined') console.log('Gigya already instantiated');
 
         var conf = {
             APIKey: '{{ apiKey }}'

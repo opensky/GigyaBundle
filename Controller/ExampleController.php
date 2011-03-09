@@ -8,9 +8,6 @@ use Symfony\Component\DependencyInjection\ContainerAware;
 
 class ExampleController extends AbstractController
 {
-    /**
-     * I'm a new user to the local app
-     */
     public function registerByEmailAction()
     {
         $parameters = array();
@@ -29,5 +26,11 @@ class ExampleController extends AbstractController
         $parameters['form'] = $form;
 
         return $this->render('GigyaBundle:Example:register.html.twig', $parameters);
+    }
+
+    public function accountAction()
+    {
+        $parameters = array();
+        return $this->render('GigyaBundle:Example:account.html.twig', $parameters);
     }
 }
