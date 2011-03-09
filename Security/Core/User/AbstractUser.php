@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenSky\Bundle\GigyaBundle\User;
+namespace OpenSky\Bundle\GigyaBundle\Security\Core\User;
 
 use Symfony\Component\Security\Core\Role\RoleInterface;
 use Symfony\Component\Security\Core\User\AccountInterface;

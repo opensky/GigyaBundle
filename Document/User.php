@@ -2,7 +2,7 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Document;
 
-use OpenSky\Bundle\GigyaBundle\User\AbstractUser;
+use OpenSky\Bundle\GigyaBundle\Security\Core\User\AbstractUser;
 use Symfony\Component\Security\Core\User\AccountInterface;
 
 /**
