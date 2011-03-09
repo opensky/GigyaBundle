@@ -106,12 +106,12 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
     {{ namespace }}.getLocalUser = function(identities) {
         var input = {
-            'identities': identities
+            'providers': identities
         };
 
         $.ajax({
             type: "POST",
-            url: {{ path('gigya_login') }},
+            url: {{ path('gigya_user_find_by_providers') }},
             data: input,
             dataType: 'json',
             success: function(data) {
