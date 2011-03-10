@@ -12,9 +12,11 @@ class MessageFactoryTest extends \PHPUnit_Framework_TestCase
         $apiKey   = 'xxxxxx';
         $apiHost  = 'https://socialize.gigya.com';
         $provider = 'twitter';
+        $route    = 'gigya.api.login.redirect';
         $redirect = 'http://shopopensky.gigya/gigya';
-        $factory  = new MessageFactory($apiKey, $apiHost, $redirect);
-        $request  = new Request(Request::METHOD_POST, $resource = '/socialize.login', $apiHost);
+        $router   = $this->getMock('Symfony\Component\Routing\RouterInterface');
+        $factory  = new MessageFactory($router, $apiKey, $apiHost, $route);
+        $request  = new Request(Request::METHOD_POST, '/socialize.login', $apiHost);
 
         $request->setContent(http_build_query(array(
             'x_provider'    => $provider,
@@ -23,6 +25,11 @@ class MessageFactoryTest extends \PHPUnit_Framework_TestCase
             'response_type' => 'token'
         )));
 
-        $this->assertEquals($request, $factory->getLoginMessage($provider));
+        $router->expects($this->once())
+            ->method('generate')
+            ->with($route, array())
+            ->will($this->returnValue($redirect));
+
+        $this->assertEquals($request, $factory->getLoginRequest($provider));
     }
 }

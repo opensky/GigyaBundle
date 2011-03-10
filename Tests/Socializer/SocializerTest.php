@@ -49,7 +49,7 @@ class SocializerTest extends \PHPUnit_Framework_TestCase
         $message  = new Request();
 
         $this->factory->expects($this->once())
-            ->method('getLoginMessage')
+            ->method('getLoginRequest')
             ->with($provider)
             ->will($this->returnValue($message));
 

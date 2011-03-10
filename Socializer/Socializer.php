@@ -88,7 +88,7 @@ class Socializer
     {
         $response = new Response();
 
-        $this->client->send($this->factory->getLoginMessage($provider), $response);
+        $this->client->send($this->factory->getLoginRequest($provider), $response);
 
         return $response;
     }
