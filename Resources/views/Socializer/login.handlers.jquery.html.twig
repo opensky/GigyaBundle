@@ -24,7 +24,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
                 {% else %}
                 , onLogin: {{ namespace }}.onLoginHandler
                 {% endif %}
-                {% if onLogoutHandler %}             
+                {% if onLogoutHandler %}
                 , onLogout: onLoginHandler
                 {% else %}
                 , onLogout: {{ namespace }}.onLogoutHandler
@@ -70,13 +70,13 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
         var hasEmail = false;
         if (newUser && typeof localUserUID != 'undefined' && typeof dateStr != 'undefined' && typeof localSignature != 'undefined') {
-            // 1. Register user 
+            // 1. Register user
             // 2. Store new user in DB
             // 3. link site account to social network identity
             //   3.1 first construct the linkAccounts parameters
 
             var params = {
-                siteUID: localUserUID, 
+                siteUID: localUserUID,
                 timestamp: dateStr,
 			    cid: 'sign_on_link_account',
                 signature: localSignature
@@ -99,7 +99,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
         {% if onLogoutParams %}
         gigya.services.socialize.logout(conf, {{ onLogoutParams }} );
         {% else %}
-        gigya.services.socialize.logout(conf, {}); 
+        gigya.services.socialize.logout(conf, {});
         {% endif %}
     }
     {% endif %}
@@ -120,7 +120,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
             error: function(request, textStatus, errorThrown) {
                 if (typeof console != 'undefined') console.log("Gigya:\n-- get Local User == error\n -- status == "+ textStatus);
             }
-        });        
+        });
     }
 })(jQuery);
 </script>
