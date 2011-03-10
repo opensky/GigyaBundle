@@ -51,9 +51,12 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
             var consoleOutput = "Gigya:";
             consoleOutput += "\n-- context == "+ eventObj.context.str;
             consoleOutput += "\n-- eventName == "+ eventObj.eventName;
+            consoleOutput += "\n-- Gigya UID == "+ eventObj.UID;
+            consoleOutput += "\n-- timestamp == "+ eventObj.timestamp;
+            consoleOutput += "\n-- signature == "+ eventObj.signature;
             consoleOutput += "\n-- provider == "+ eventObj.provider;
             consoleOutput += "\n-- providerUID == "+ eventObj.user.identities[eventObj.provider].providerUID;
-            consoleOutput += "\n-- Known providers include:";
+            consoleOutput += "\nKnown providers include:";
             for (var key in eventObj.user.identities) {
                 for (var property in eventObj.user.identities[key]) {
                     consoleOutput += "\n-- "+key+"."+property+" == "+ eventObj.user.identities[key][property];
