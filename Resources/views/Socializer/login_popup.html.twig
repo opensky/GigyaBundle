@@ -2,12 +2,13 @@
  # @param string containerID
  # @param int height
  # @param int weight
+ # @param string redirectURL [optional]
  # @param string onLoginHandler [optional]
  # @param string onLogoutHandler [optional]
  # @param string onLogoutParams [optional]
  # @param boolean showTermsLink [default == false]
  # @param boolean hideGigyaLink [default == true]
- # @param string buttonsStyle [default == 'fullLogo']
+ # @param string buttonsStyle [default == 'standard']
  # @param boolean showWhatsThis [default == true]
  # @param string cid [optional]
  # @param string library [default == 'jquery']
@@ -33,6 +34,9 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
         // Parameters for the showLoginUI method
         var params = {
             containerID: '{{ containerID }}' // The container for the component
+            {% if redirectURL %}
+            ,redirectURL: '{{ redirectURL }}' // 
+            {% endif %}
             ,height: {{ height | escape('js') }}
             ,width: {{ width | escape('js') }}
             {% if showTermsLink %}
@@ -46,7 +50,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
             ,hideGigyaLink: true // remove 'Gigya' link
             {% endif %}
             {% if not buttonsStyle %}
-            ,buttonsStyle: 'fullLogo' // Change the default buttons design to "Full Logos" design  
+            ,buttonsStyle: 'standard' // Change the default buttons design to "Full Logos" design  
             {% else %}
             ,buttonsStyle: '{{ buttonsStyle }}' // Change the default buttons design to "Full Logos" design  
             {% endif %}

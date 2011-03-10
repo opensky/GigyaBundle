@@ -4,7 +4,6 @@ namespace OpenSky\Bundle\GigyaBundle\Controller;
 
 use OpenSky\Bundle\GigyaBundle\Document\User;
 use OpenSky\Bundle\GigyaBundle\Form\RegisterByEmailForm;
-use Symfony\Component\DependencyInjection\ContainerAware;
 
 class ExampleController extends AbstractController
 {

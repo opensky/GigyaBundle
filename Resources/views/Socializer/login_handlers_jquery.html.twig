@@ -25,12 +25,12 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
             gigya.services.socialize.addEventHandlers(conf, {
                 context: { str: 'single_sign_on' }
                 {% if onLoginHandler %}
-                , onLogin: onLoginHandler
+                , onLogin: {{ onLoginHandler }}
                 {% else %}
                 , onLogin: {{ namespace }}.onLoginHandler
                 {% endif %}
                 {% if onLogoutHandler %}             
-                , onLogout: onLoginHandler
+                , onLogout: {{ onLoginHandler }}
                 {% else %}
                 , onLogout: {{ namespace }}.onLogoutHandler
                 {% endif %}
