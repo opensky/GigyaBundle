@@ -3,7 +3,12 @@ gigya_user_find_by_uid:
     defaults:     { _controller: GigyaBundle:User:findByUID }
     requirements: { _method: get }
 
-gigya_user_oath_redirect:
+gigya_user_oauth_redirect:
     pattern:      /user/oath-redirect
     defaults:     { _controller: GigyaBundle:User:oathRedirect }
     requirements: { _method: get }
+
+gigya_user_oauth_login:
+    pattern:      /user/login/{provider}
+    defaults:     { _controller: gigya.controller:login }
+    requirements: { _method: get, provider: '[\w\d\-]{1,32}' }
