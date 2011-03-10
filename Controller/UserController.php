@@ -6,10 +6,10 @@ use Symfony\Component\DependencyInjection\ContainerAware;
 
 class UserController extends AbstractController
 {
-    public function findByProvidersAction()
+    public function findByUIDAction()
     {
         $status = 200;
-        $providers = $this->get('request')->query->get('providers');
+        $providers = $this->get('request')->query->get('UID');
         $data = $providers;
 
         $content = json_encode($data);

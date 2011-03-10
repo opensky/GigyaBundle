@@ -1,4 +1,4 @@
-gigya_user_find_by_providers:
-    pattern:      /user/find-by-providers
-    defaults:     { _controller: GigyaBundle:User:findByProviders }
+gigya_user_find_by_uid:
+    pattern:      /user/find-by-uid
+    defaults:     { _controller: GigyaBundle:User:findByUID }
     requirements: { _method: get }

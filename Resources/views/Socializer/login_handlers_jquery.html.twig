@@ -72,10 +72,9 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
         var newUser = false;
         var hasEmail = false;
-        var identities = eventObj.user.identities;
 
         // Check if user exists
-        var localUser = {{ namespace }}.getLocalUser(identities);
+        var localUser = {{ namespace }}.getLocalUser(eventObj);
 
         // If user exists, map provider UID to user
 
@@ -118,14 +117,14 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
     }
     {% endif %}
 
-    {{ namespace }}.getLocalUser = function(identities) {
+    {{ namespace }}.getLocalUser = function(eventObj) {
         var input = {
-            'providers': identities
+            'UID': eventObj.UID
         };
 
         $.ajax({
             type: "POST",
-            url: '{{ path('gigya_user_find_by_providers') }}',
+            url: '{{ path('gigya_user_find_by_uid') }}',
             data: input,
             dataType: 'json',
             success: function(data) {
