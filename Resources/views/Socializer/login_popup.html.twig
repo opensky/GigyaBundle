@@ -81,7 +81,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
 {# TODO Support other javascript libraries #}
 {% if library == 'jquery' %}
-    {% include "GigyaBundle:Socializer:login_handlers_jquery.html.twig" with { 'onLoginHandler': onLoginHandler, 'onLogoutHandler': onLogoutHandler, 'onLogoutParams': onLogoutParams} %}
+    {% include "GigyaBundle:Socializer:login_popup_handlers_jquery.html.twig" with { 'onLoginHandler': onLoginHandler, 'onLogoutHandler': onLogoutHandler, 'onLogoutParams': onLogoutParams} %}
 {% else %}
-    {% include "GigyaBundle:Socializer:login_handlers_jquery.html.twig" with { 'onLoginHandler': onLoginHandler, 'onLogoutHandler': onLogoutHandler, 'onLogoutParams': onLogoutParams} %}
+    {% include "GigyaBundle:Socializer:login_popup_handlers_jquery.html.twig" with { 'onLoginHandler': onLoginHandler, 'onLogoutHandler': onLogoutHandler, 'onLogoutParams': onLogoutParams} %}
 {% endif %}
