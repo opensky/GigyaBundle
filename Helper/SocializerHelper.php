@@ -53,7 +53,7 @@ class SocializerHelper extends Helper
      */
     public function getProviders()
     {
-        return $this->providers;
+        return $this->socializer->getProviders();
     }
 
     /**

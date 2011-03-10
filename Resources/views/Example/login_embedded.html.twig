@@ -7,8 +7,16 @@
 {% block _content %}
 	<section>
         <h1>Login Via Embedded</h1>
-        <div id="login"></div>
-        {% include "GigyaBundle:Socializer:login_embedded.html.twig" with { 'containerID': 'login', 'height': 85, 'width': 360 } %}
+
+        {% include "GigyaBundle:Socializer:login_embedded.html.twig" %}
+        <ul>
+            {% for provider, label in gigya_socializer.providers %}
+               <li>
+                   <span onclick="javascript:{{ gigya_socializer.loginFunctionName }}('{{ provider}}', 'http://www.mattfitz.info')">{{ label }}</span>
+               </li>
+            {% endfor %}
+        </ul>
+
         {% include "GigyaBundle:Socializer:source.html.twig" %}
 	</section>
 {% endblock %}

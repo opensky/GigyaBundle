@@ -1,15 +1,3 @@
-{#
- # @param string provider [facebook, twitter, yahoo, messenger, google, etc...]
- # @param string redirectURL 
- # @param boolean pendingRegistration [default == false]
- # @param integer sessionExpiration [default == 0]
- # @param string facebookExtraPermissions [optional] rsvp_event,sms
- # @param boolean authCodeOnly [default == false]
- # @param string callback [optional] 
- # @param string cid [optional]
- # @param string context [optional]
- #}
-
 {% set apiKey = gigya_socializer.apiKey %}
 {% set namespace = gigya_socializer.namespace %}
 {% set loginFunctionName = gigya_socializer.loginFunctionName %}
@@ -19,7 +7,7 @@
 if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ namespace }} = window.{{ namespace }} = {}; }
 {% endif %}
 
-{{ loginFunctionName }} = function() {
+{{ loginFunctionName }} = function(provider, redirectURL, pendingRegistration, sessionExpiration, facebookExtraPermissions, authCodeOnly, callback, cid, context) {
     if (typeof gigya != 'undefined') {
         if (typeof console != 'undefined') console.log('Gigya:\n-- {{ loginFunctionName }} executed and source library already instantiated');
 
@@ -27,39 +15,25 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
             APIKey: '{{ apiKey }}'
         };
 
+        var pendingRegistration = typeof(pendingRegistration) != 'undefined' ? pendingRegistration : false;        
+        var sessionExpiration = typeof(sessionExpiration) != 'undefined' ? sessionExpiration : 0;
+        var facebookExtraPermissions = typeof(facebookExtraPermissions) != 'undefined' ? facebookExtraPermissions : null;
+        var authCodeOnly = typeof(authCodeOnly) != 'undefined' ? authCodeOnly : false;
+        var callback = typeof(callback) != 'undefined' ? callback : null;
+        var cid = typeof(cid) != 'undefined' ? cid : null;
+        var context = typeof(context) != 'undefined' ? context : null;
+
         // Parameters for the showLoginUI method
         var params = {
-            containerID: '{{ containerID }}' // The container for the component
-            {% if redirectURL %}
-            ,redirectURL: '{{ redirectURL }}' // 
-            {% endif %}
-            ,height: {{ height | escape('js') }}
-            ,width: {{ width | escape('js') }}
-            {% if showTermsLink %}
-            ,showTermsLink: {{ showTermsLink }}  // remove 'Terms' link
-            {% else %}
-            ,showTermsLink: false // remove 'Terms' link
-            {% endif %}
-            {% if hideGigyaLink %}
-            ,hideGigyaLink: {{ hideGigyaLink }} // remove 'Gigya' link
-            {% else %}
-            ,hideGigyaLink: true // remove 'Gigya' link
-            {% endif %}
-            {% if not buttonsStyle %}
-            ,buttonsStyle: 'standard' // Change the default buttons design to "Full Logos" design  
-            {% else %}
-            ,buttonsStyle: '{{ buttonsStyle }}' // Change the default buttons design to "Full Logos" design  
-            {% endif %}
-            {% if showWhatsThis %}
-            ,showWhatsThis: {{ showWhatsThis }} // Pop-up a hint describing the Login Plugin, when the user rolls over the Gigya link.
-            {% else %}
-            ,showWhatsThis: true // Pop-up a hint describing the Login Plugin, when the user rolls over the Gigya link.
-            {% endif %}
-            {% if cid %}
-            ,cid: '{{ cid }}'
-            {% else %}
-            ,cid: ''
-            {% endif %}
+            provider:  provider
+            ,redirectURL: redirectURL
+            ,pendingRegistration: pendingRegistration
+            ,sessionExpiration: sessionExpiration
+            ,facebookExtraPermissions: facebookExtraPermissions
+            ,authCodeOnly: authCodeOnly
+            ,callback: callback
+            ,cid: cid
+            ,context: context
         };
 	
         // Show the "login" widget
@@ -71,6 +45,4 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
         },100);
     }
 }
-
-{{ loginFunctionName }}();
 </script>
