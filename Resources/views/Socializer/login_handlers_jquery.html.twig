@@ -111,7 +111,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
         $.ajax({
             type: "POST",
-            url: {{ path('gigya_user_find_by_providers') }},
+            url: '{{ path('gigya_user_find_by_providers') }}',
             data: input,
             dataType: 'json',
             success: function(data) {
