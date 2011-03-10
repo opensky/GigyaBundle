@@ -16,20 +16,20 @@ class SocializerHelper extends Helper
         $this->socializer = $socializer;
     }
 
-	/**
+    /**
      * @return string $apiKey
      */
     public function getApiKey()
     {
-		return $this->socializer->getApiKey();
+        return $this->socializer->getApiKey();
     }
 
-	/**
+    /**
      * @return string $name
      */
     public function getNamespace()
     {
-		return $this->namespace;
+        return $this->namespace;
     }
 
     /**
@@ -37,7 +37,23 @@ class SocializerHelper extends Helper
      */
     public function getLoginFunctionName()
     {
+        return $this->namespace.".login";
+    }
+
+    /**
+     * @return string $loginUiFunctionName
+     */
+    public function getLoginUiFunctionName()
+    {
         return $this->namespace.".showLoginUI";
+    }
+
+    /**
+     * @return array $providers
+     */
+    public function getProviders()
+    {
+        return $this->providers;
     }
 
     /**
@@ -49,7 +65,7 @@ class SocializerHelper extends Helper
         return $this->namespace.".showShareUI_".$key;
     }
 
-	/**
+    /**
      * @param string $key
      * @return AntiMattr\GigyaBundle\Socializer\UserAction $userAction
      */

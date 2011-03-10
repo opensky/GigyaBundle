@@ -1,22 +1,18 @@
 {#
- # @param string containerID
- # @param int height
- # @param int weight
- # @param string redirectURL [optional]
- # @param string onLoginHandler [optional]
- # @param string onLogoutHandler [optional]
- # @param string onLogoutParams [optional]
- # @param boolean showTermsLink [default == false]
- # @param boolean hideGigyaLink [default == true]
- # @param string buttonsStyle [default == 'standard']
- # @param boolean showWhatsThis [default == true]
+ # @param string provider [facebook, twitter, yahoo, messenger, google, etc...]
+ # @param string redirectURL 
+ # @param boolean pendingRegistration [default == false]
+ # @param integer sessionExpiration [default == 0]
+ # @param string facebookExtraPermissions [optional] rsvp_event,sms
+ # @param boolean authCodeOnly [default == false]
+ # @param string callback [optional] 
  # @param string cid [optional]
- # @param string library [default == 'jquery']
+ # @param string context [optional]
  #}
 
 {% set apiKey = gigya_socializer.apiKey %}
 {% set namespace = gigya_socializer.namespace %}
-{% set loginFunctionName = gigya_socializer.loginFunctionUiName %}
+{% set loginFunctionName = gigya_socializer.loginFunctionName %}
 
 <script type="text/javascript">
 {% if namespace != 'window' %}
@@ -67,7 +63,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
         };
 	
         // Show the "login" widget
-        gigya.services.socialize.showLoginUI(conf, params);
+        gigya.services.socialize.login(conf, params);
     } else {
         if (typeof console != 'undefined') console.log("Gigya:\n-- typeof gigya == "+typeof gigya+"\n-- Reattempting instantiation in 100 milliseconds");
         setTimeout(function(){

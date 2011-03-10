@@ -11,6 +11,7 @@ class SocializerTest extends \PHPUnit_Framework_TestCase
 {
     private $socializer;
     private $apiKey;
+    private $providers;
     private $client;
     private $factory;
 
@@ -18,14 +19,16 @@ class SocializerTest extends \PHPUnit_Framework_TestCase
     {
         parent::setup();
         $this->apiKey     = 'xxxx';
+        $this->providers  = array(1, 2, 3);
         $this->client     = $this->getMockClient();
         $this->factory    = $this->getMockMessageFactory();
-        $this->socializer = new Socializer($this->apiKey, $this->client, $this->factory);
+        $this->socializer = new Socializer($this->apiKey, $this->providers, $this->client, $this->factory);
     }
 
     public function testConstructor()
     {
         $this->assertEquals($this->apiKey, $this->socializer->getApiKey());
+        $this->assertEquals($this->providers, $this->socializer->getProviders());
     }
 
     public function testHasSetGetUserActionByKey()

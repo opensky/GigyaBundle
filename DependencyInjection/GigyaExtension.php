@@ -50,6 +50,9 @@ class GigyaExtension extends Extension
             if (isset($config['namespace'])) {
                 $container->setParameter('gigya.socializer.namespace', $config['namespace']);
             }
+            if (isset($config['providers'])) {
+                $container->setParameter('gigya.socializer.providers', $config['providers']);
+            }
         }
     }
 

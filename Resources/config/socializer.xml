@@ -5,6 +5,7 @@
     <parameters>
         <parameter key="gigya.socializer.api_key" type="string" />
         <parameter key="gigya.socializer.namespace" type="string">window</parameter>
+        <parameter key="gigya.socializer.providers" type="collection" />
         <parameter key="gigya.client.class">Buzz\Client\FileGetContents</parameter>
         <parameter key="gigya.client.message_factory.class">OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory</parameter>
     </parameters>
@@ -12,6 +13,7 @@
     <services>
         <service id="gigya.socializer" class="OpenSky\Bundle\GigyaBundle\Socializer\Socializer">
             <argument>%gigya.socializer.api_key%</argument>
+            <argument>%gigya.socializer.providers%</argument>
             <argument type="service" id="gigya.client" />
             <argument type="service" id="gigya.client.message_factory" />
         </service>

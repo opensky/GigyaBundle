@@ -19,13 +19,15 @@ class Socializer
     );
 
     private $apiKey;
+    private $providers = array();
     private $userActions = array();
     private $client;
     private $factory;
 
-    public function __construct($apiKey, ClientInterface $client, MessageFactory $factory)
+    public function __construct($apiKey, array $providers = array(), ClientInterface $client, MessageFactory $factory)
     {
         $this->apiKey  = (string) $apiKey;
+        $this->providers = $providers;
         $this->client  = $client;
         $this->factory = $factory;
     }
@@ -45,6 +47,14 @@ class Socializer
     public function getApiKey()
     {
         return $this->apiKey;
+    }
+
+    /**
+     * @return array $providers
+     */
+    public function getProviders()
+    {
+        return $this->providers;
     }
 
     /**
