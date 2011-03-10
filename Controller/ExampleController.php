@@ -27,9 +27,15 @@ class ExampleController extends AbstractController
         return $this->render('GigyaBundle:Example:register.html.twig', $parameters);
     }
 
-    public function accountAction()
+    public function loginEmbeddedAction()
     {
         $parameters = array();
-        return $this->render('GigyaBundle:Example:account.html.twig', $parameters);
+        return $this->render('GigyaBundle:Example:login_embedded.html.twig', $parameters);
+    }
+
+    public function loginPopupAction()
+    {
+        $parameters = array();
+        return $this->render('GigyaBundle:Example:login_popup.html.twig', $parameters);
     }
 }
