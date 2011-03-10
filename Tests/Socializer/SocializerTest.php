@@ -2,33 +2,30 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Tests\Socializer;
 
+use Buzz\Message\Request;
+
 use OpenSky\Bundle\GigyaBundle\Socializer\Socializer;
 use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 
 class SocializerTest extends \PHPUnit_Framework_TestCase
 {
     private $socializer;
+    private $apiKey;
+    private $client;
+    private $factory;
 
     public function setUp()
     {
         parent::setup();
-        $this->apiKey = 'xxxx';
-        $this->namespace = 'AntiMattr';
-        $this->socializer = new Socializer($this->apiKey, $this->namespace);
-    }
-
-    public function tearDown()
-    {
-        $this->socializer = null;
-        $this->namespace = null;
-        $this->apiKey = null;
-        parent::tearDown();
+        $this->apiKey     = 'xxxx';
+        $this->client     = $this->getMockClient();
+        $this->factory    = $this->getMockMessageFactory();
+        $this->socializer = new Socializer($this->apiKey, $this->client, $this->factory);
     }
 
     public function testConstructor()
     {
         $this->assertEquals($this->apiKey, $this->socializer->getApiKey());
-        $this->assertEquals($this->namespace, $this->socializer->getNamespace());
     }
 
     public function testHasSetGetUserActionByKey()
@@ -42,30 +39,33 @@ class SocializerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->socializer->hasUserActionByKey($key));
         $this->assertEquals($userAction, $this->socializer->getUserActionByKey($key));
     }
-//
-//    public function testLogin()
-//    {
-//        $provider = 'twitter';
-//        $message  = $this->getMockMessage();
-//        $factory  = $this->getMockMessageFactory();
-//
-//        $factory->expects($this->once())
-//            ->method('getLoginMessage')
-//            ->with($provider)
-//            ->will($this->returnValue($message));
-//
-//        $this->buzz->expects($this->once())
-//            ->method('send')
-//            ->with($message);
-//    }
-//
-//    private function getMockMessage()
-//    {
-//        return $this->getMockBuilder('')
-//    }
-//
-//    private function getMockMessageFactory()
-//    {
-//
-//    }
+
+    public function testLogin()
+    {
+        $provider = 'twitter';
+        $message  = new Request();
+
+        $this->factory->expects($this->once())
+            ->method('getLoginMessage')
+            ->with($provider)
+            ->will($this->returnValue($message));
+
+        $this->client->expects($this->once())
+            ->method('send')
+            ->with($message);
+
+        $this->socializer->login($provider);
+    }
+
+    private function getMockMessageFactory()
+    {
+        return $this->getMockBuilder('OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    private function getMockClient()
+    {
+        return $this->getMock('Buzz\Client\ClientInterface');
+    }
 }
