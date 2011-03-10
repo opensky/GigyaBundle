@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenSky\Bundle\GigyaBundle;
+namespace OpenSky\Bundle\GigyaBundle\Socializer;
 
 use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 

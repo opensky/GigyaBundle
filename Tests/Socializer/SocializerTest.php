@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenSky\Bundle\GigyaBundle\Tests;
+namespace OpenSky\Bundle\GigyaBundle\Tests\Socializer;
 
-use OpenSky\Bundle\GigyaBundle\Socializer;
+use OpenSky\Bundle\GigyaBundle\Socializer\Socializer;
 use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 
 class SocializerTest extends \PHPUnit_Framework_TestCase
@@ -42,4 +42,30 @@ class SocializerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->socializer->hasUserActionByKey($key));
         $this->assertEquals($userAction, $this->socializer->getUserActionByKey($key));
     }
+//
+//    public function testLogin()
+//    {
+//        $provider = 'twitter';
+//        $message  = $this->getMockMessage();
+//        $factory  = $this->getMockMessageFactory();
+//
+//        $factory->expects($this->once())
+//            ->method('getLoginMessage')
+//            ->with($provider)
+//            ->will($this->returnValue($message));
+//
+//        $this->buzz->expects($this->once())
+//            ->method('send')
+//            ->with($message);
+//    }
+//
+//    private function getMockMessage()
+//    {
+//        return $this->getMockBuilder('')
+//    }
+//
+//    private function getMockMessageFactory()
+//    {
+//
+//    }
 }
