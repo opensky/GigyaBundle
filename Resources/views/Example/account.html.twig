@@ -6,7 +6,7 @@
 
 {% block _content %}
 	<section>
-        <h1>Account</h1>
+        <h1>Account (DATE: {{ '' | date('c') }})</h1>
         <div id="login"></div>
         {% include "GigyaBundle:Socializer:login.html.twig" with { 'containerID': 'login', 'height': 85, 'width': 360 } %}
         {% include "GigyaBundle:Socializer:source.html.twig" %}

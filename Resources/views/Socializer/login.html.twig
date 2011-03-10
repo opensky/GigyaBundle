@@ -24,7 +24,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
 {{ loginFunctionName }} = function() {
     if (typeof gigya != 'undefined') {
-        if (typeof console != 'undefined') console.log('Gigya already instantiated');
+        if (typeof console != 'undefined') console.log('Gigya:\n-- {{ loginFunctionName }} executed and source library already instantiated');
 
         var conf = {
             APIKey: '{{ apiKey }}'

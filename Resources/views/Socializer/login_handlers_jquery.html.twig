@@ -16,7 +16,12 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 ;(function($){
     {{ namespace }}.registerSignOnHandlers = function() {
         if (typeof gigya != 'undefined') {
-            if (typeof console != 'undefined') console.log('Gigya instantiated');
+            if (typeof console != 'undefined') console.log('Gigya:\n-- {{ namespace }}.registerSignOnHandlers executed and source library already instantiated');
+
+            var conf = {
+                APIKey: '{{ apiKey }}'
+            };
+
             gigya.services.socialize.addEventHandlers(conf, {
                 context: { str: 'single_sign_on' }
                 {% if onLoginHandler %}
@@ -40,7 +45,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
     {% if not onLoginHandler %}
     {{ namespace }}.onLoginHandler = function(eventObj) {
-        if (typeof console != 'undefined') console.log("Gigya:\n-- typeof gigya == "+typeof gigya+"\n-- onLoginHandler executed");
+        if (typeof console != 'undefined') console.log("Gigya:\n-- onLoginHandler executed");
 
         if (typeof console != 'undefined') {
             var consoleOutput = "Gigya:";
@@ -48,6 +53,12 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
             consoleOutput += "\n-- eventName == "+ eventObj.eventName;
             consoleOutput += "\n-- provider == "+ eventObj.provider;
             consoleOutput += "\n-- providerUID == "+ eventObj.user.identities[eventObj.provider].providerUID;
+            consoleOutput += "\n-- Known providers include:";
+            for (var key in eventObj.user.identities) {
+                for (var property in eventObj.user.identities[key]) {
+                    consoleOutput += "\n-- "+key+"."+property+" == "+ eventObj.user.identities[key][property];
+                }
+            }
 
             console.log(consoleOutput);
         }
@@ -90,7 +101,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
     {% if not onLogoutHandler %}
     {{ namespace }}.onLogoutHandler = function() {
-        if (typeof console != 'undefined') console.log("Gigya:\n-- typeof gigya == "+typeof gigya+"\n-- onLogoutHandler executed");
+        if (typeof console != 'undefined') console.log("Gigya:\n-- onLogoutHandler executed");
 
         var conf = {
             APIKey: '{{ apiKey }}'
@@ -122,5 +133,8 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
             }
         });        
     }
+
+    {{ namespace }}.registerSignOnHandlers();
+
 })(jQuery);
 </script>
