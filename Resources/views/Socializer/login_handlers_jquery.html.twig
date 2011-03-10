@@ -51,7 +51,7 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
             var consoleOutput = "Gigya:";
             consoleOutput += "\n-- context == "+ eventObj.context.str;
             consoleOutput += "\n-- eventName == "+ eventObj.eventName;
-            consoleOutput += "\n-- Gigya UID == "+ eventObj.UID;
+            consoleOutput += "\n-- UID == "+ eventObj.UID;
             consoleOutput += "\n-- timestamp == "+ eventObj.timestamp;
             consoleOutput += "\n-- signature == "+ eventObj.signature;
             consoleOutput += "\n-- provider == "+ eventObj.provider;
