@@ -84,11 +84,16 @@ class Socializer
         $this->userActions[$key] = $userAction;
     }
 
+    /**
+     * @param string $provider
+     *
+     * @return Buzz\Message\Response
+     */
     public function login($provider)
     {
-        $response = new Response();
+        $response = $this->factory->getResponse();
 
-        $this->client->send($this->factory->getLoginMessage($provider), $response);
+        $this->client->send($this->factory->getLoginRequest($provider), $response);
 
         return $response;
     }
