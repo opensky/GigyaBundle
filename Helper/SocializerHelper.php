@@ -25,7 +25,7 @@ class SocializerHelper extends Helper
     }
 
     /**
-     * @return string $name
+     * @return string $namespace
      */
     public function getNamespace()
     {
@@ -41,9 +41,9 @@ class SocializerHelper extends Helper
     }
 
     /**
-     * @return string $loginUiFunctionName
+     * @return string $loginUIFunctionName
      */
-    public function getLoginUiFunctionName()
+    public function getLoginUIFunctionName()
     {
         return $this->namespace.".showLoginUI";
     }

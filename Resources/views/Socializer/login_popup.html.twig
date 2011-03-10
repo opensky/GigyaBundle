@@ -16,16 +16,16 @@
 
 {% set apiKey = gigya_socializer.apiKey %}
 {% set namespace = gigya_socializer.namespace %}
-{% set loginFunctionName = gigya_socializer.loginFunctionUiName %}
+{% set loginUIFunctionName = gigya_socializer.getLoginUIFunctionName() %}
 
 <script type="text/javascript">
 {% if namespace != 'window' %}
 if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ namespace }} = window.{{ namespace }} = {}; }
 {% endif %}
 
-{{ loginFunctionName }} = function() {
+{{ loginUIFunctionName }} = function() {
     if (typeof gigya != 'undefined') {
-        if (typeof console != 'undefined') console.log('Gigya:\n-- {{ loginFunctionName }} executed and source library already instantiated');
+        if (typeof console != 'undefined') console.log('Gigya:\n-- {{ loginUIFunctionName }} executed and source library already instantiated');
 
         var conf = {
             APIKey: '{{ apiKey }}'
@@ -71,12 +71,12 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
     } else {
         if (typeof console != 'undefined') console.log("Gigya:\n-- typeof gigya == "+typeof gigya+"\n-- Reattempting instantiation in 100 milliseconds");
         setTimeout(function(){
-            {{ loginFunctionName }}();
+            {{ loginUIFunctionName }}();
         },100);
     }
 }
 
-{{ loginFunctionName }}();
+{{ loginUIFunctionName }}();
 </script>
 
 {# TODO Support other javascript libraries #}
