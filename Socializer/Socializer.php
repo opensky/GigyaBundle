@@ -1,7 +1,11 @@
 <?php
 
-namespace OpenSky\Bundle\GigyaBundle;
+namespace OpenSky\Bundle\GigyaBundle\Socializer;
 
+use Buzz\Message\Response;
+
+use Buzz\Client\ClientInterface;
+use OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory;
 use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 
 class Socializer
@@ -9,14 +13,22 @@ class Socializer
     const SIMPLE_SHARE = 'simpleShare';
     const MULTI_SELECT = 'multiSelect';
 
-    private $apiKey;
-    private $namespace;
-    private $userActions = array();
-
     static public $shareChoices = array(
         self::SIMPLE_SHARE => 'Simple Share',
         self::MULTI_SELECT => 'Multi Select',
     );
+
+    private $apiKey;
+    private $userActions = array();
+    private $client;
+    private $factory;
+
+    public function __construct($apiKey, ClientInterface $client, MessageFactory $factory)
+    {
+        $this->apiKey  = (string) $apiKey;
+        $this->client  = $client;
+        $this->factory = $factory;
+    }
 
     /**
      * @param string $share
@@ -24,13 +36,7 @@ class Socializer
      */
     static public function isShareValid($share)
     {
-		return array_key_exists($share, static::$shareChoices);
-	}
-
-    public function __construct($apiKey, $namespace = 'window')
-    {
-        $this->apiKey = (string) $apiKey;
-        $this->namespace = (string) $namespace;
+        return array_key_exists($share, static::$shareChoices);
     }
 
     /**
@@ -39,14 +45,6 @@ class Socializer
     public function getApiKey()
     {
         return $this->apiKey;
-    }
-
-    /**
-     * @return string $namespace
-     */
-    public function getNamespace()
-    {
-        return $this->namespace;
     }
 
     /**
@@ -74,5 +72,14 @@ class Socializer
     public function addUserActionByKey($userAction, $key)
     {
         $this->userActions[$key] = $userAction;
+    }
+
+    public function login($provider)
+    {
+        $response = new Response();
+
+        $this->client->send($this->factory->getLoginMessage($provider), $response);
+
+        return $response;
     }
 }

@@ -2,15 +2,17 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Helper;
 
-use OpenSky\Bundle\GigyaBundle\Socializer;
+use OpenSky\Bundle\GigyaBundle\Socializer\Socializer;
 use Symfony\Component\Templating\Helper\Helper;
 
 class SocializerHelper extends Helper
 {
     private $socializer;
+    private $namespace;
 
-    public function __construct(Socializer $socializer)
+    public function __construct(Socializer $socializer, $namespace)
     {
+        $this->namespace  = $namespace;
         $this->socializer = $socializer;
     }
 
@@ -27,7 +29,7 @@ class SocializerHelper extends Helper
      */
     public function getNamespace()
     {
-		return $this->socializer->getNamespace();
+		return $this->namespace;
     }
 
     /**
@@ -35,7 +37,7 @@ class SocializerHelper extends Helper
      */
     public function getLoginFunctionName()
     {
-        return $this->socializer->getNamespace().".showLoginUI";
+        return $this->namespace.".showLoginUI";
     }
 
     /**
@@ -44,7 +46,7 @@ class SocializerHelper extends Helper
      */
     public function getShareFunctionName($key)
     {
-        return $this->socializer->getNamespace().".showShareUI_".$key;
+        return $this->namespace.".showShareUI_".$key;
     }
 
 	/**
