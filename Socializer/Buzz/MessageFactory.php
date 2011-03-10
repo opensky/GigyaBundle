@@ -2,6 +2,8 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Socializer\Buzz;
 
+use Buzz\Message\Response;
+
 use Buzz\Message\Request;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -32,5 +34,10 @@ class MessageFactory
         )));
 
         return $request;
+    }
+
+    public function getResponse()
+    {
+        return new Response();
     }
 }

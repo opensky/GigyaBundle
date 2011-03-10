@@ -2,6 +2,8 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Tests\Socializer;
 
+use Buzz\Message\Response;
+
 use Buzz\Message\Request;
 
 use OpenSky\Bundle\GigyaBundle\Socializer\Socializer;
@@ -46,18 +48,23 @@ class SocializerTest extends \PHPUnit_Framework_TestCase
     public function testLogin()
     {
         $provider = 'twitter';
-        $message  = new Request();
+        $request  = new Request();
+        $response = new Response();
 
         $this->factory->expects($this->once())
             ->method('getLoginRequest')
             ->with($provider)
-            ->will($this->returnValue($message));
+            ->will($this->returnValue($request));
+
+        $this->factory->expects($this->once())
+            ->method('getResponse')
+            ->will($this->returnValue($response));
 
         $this->client->expects($this->once())
             ->method('send')
-            ->with($message);
+            ->with($request, $response);
 
-        $this->socializer->login($provider);
+        $this->assertSame($response, $this->socializer->login($provider));
     }
 
     private function getMockMessageFactory()

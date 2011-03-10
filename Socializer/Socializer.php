@@ -86,7 +86,7 @@ class Socializer
 
     public function login($provider)
     {
-        $response = new Response();
+        $response = $this->factory->getResponse();
 
         $this->client->send($this->factory->getLoginRequest($provider), $response);
 
