@@ -5,8 +5,8 @@ namespace OpenSky\Bundle\GigyaBundle\Security;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use OpenSky\Bundle\GigyaBundle\Socializer;
 use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
-use Symfony\Component\Security\Core\Exception\UnsupportedAccountException;
-use Symfony\Component\Security\Core\User\AccountInterface;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
@@ -34,16 +34,16 @@ class UserProvider implements UserProviderInterface
     /**
      * {@inheritDoc}
      */
-    public function loadUserByAccount(AccountInterface $account)
+    public function loadUser(UserInterface $user)
     {
 
     }
 
     /**
      * @param array $providers
-     * @return AccountInterface | null
+     * @return UserInterface | null
      * @throws AuthenticationCredentialsNotFoundException
-     * @throws UnsupportedAccountException
+     * @throws UnsupportedUserException
      */
     public function loadUserByProviders(array $providers)
     {
@@ -52,7 +52,7 @@ class UserProvider implements UserProviderInterface
             throw new AuthenticationCredentialsNotFoundException('User not found by providers '.print_r($providers, true));
         }
         if ($result->count() > 1) {
-            throw new UnsupportedAccountException('Multiple users found by providers '.print_r($providers, true));
+            throw new UnsupportedUserException('Multiple users found by providers '.print_r($providers, true));
         }
         return $result->getSingleResult();
     }
