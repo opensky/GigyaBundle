@@ -28,6 +28,10 @@ class MessageFactory
     {
         $request = new Request(Request::METHOD_POST, '/socialize.login', $this->host);
 
+        $request->setHeaders(array(
+            'Content-Type' => 'application/x-www-form-urlencoded'
+        ));
+
         $request->setContent(http_build_query(array(
             'x_provider'    => $provider,
             'client_id'     => $this->key,
@@ -40,7 +44,18 @@ class MessageFactory
 
     public function getAccessTokenRequest()
     {
+        $request = new Request(Request::METHOD_POST, '/socialize.getToken', $this->host);
 
+        $request->setHeaders(array(
+            'Content-Type'  => 'application/x-www-form-urlencoded',
+            'Authorization' => 'Basic '.base64_encode($this->key.':'.$this->secret),
+        ));
+
+        $request->setContent(http_build_query(array(
+            'grant_type'    => 'none',
+        )));
+
+        return $request;
     }
 
     public function getResponse()
