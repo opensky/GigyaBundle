@@ -13,11 +13,13 @@ class MessageFactory
     private $key;
     private $host;
     private $redirect;
+    private $secret;
 
-    public function __construct(RouterInterface $router, $key, $host, $redirect)
+    public function __construct(RouterInterface $router, $key, $secret, $host, $redirect)
     {
         $this->router   = $router;
         $this->key      = $key;
+        $this->secret   = $secret;
         $this->host     = $host;
         $this->redirect = $redirect;
     }

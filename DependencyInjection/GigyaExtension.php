@@ -53,6 +53,9 @@ class GigyaExtension extends Extension
             if (isset($config['providers'])) {
                 $container->setParameter('gigya.socializer.providers', $config['providers']);
             }
+            if (isset($config['secret'])) {
+                $container->setParameter('gigya.socializer.secret', $config['secret']);
+            }
         }
     }
 
