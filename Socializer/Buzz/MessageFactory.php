@@ -38,6 +38,11 @@ class MessageFactory
         return $request;
     }
 
+    public function getAccessTokenRequest()
+    {
+
+    }
+
     public function getResponse()
     {
         return new Response();

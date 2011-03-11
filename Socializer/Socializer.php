@@ -2,11 +2,11 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Socializer;
 
-use Buzz\Message\Response;
-
 use Buzz\Client\ClientInterface;
+use Buzz\Message\Response;
 use OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory;
 use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class Socializer
 {
@@ -96,5 +96,23 @@ class Socializer
         $this->client->send($this->factory->getLoginRequest($provider), $response);
 
         return $response;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getAccessToken()
+    {
+        $response = $this->factory->getResponse();
+
+        $this->client->send($this->factory->getAccessTokenRequest(), $response);
+
+        $result = json_decode($response->getContent(), true);
+
+        if (isset($result['error'])) {
+            throw new AuthenticationException($result['error_description']);
+        }
+
+        return $result;
     }
 }

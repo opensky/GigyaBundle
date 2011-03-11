@@ -4,33 +4,54 @@ namespace OpenSky\Bundle\GigyaBundle\Tests\Socializer\Buzz;
 
 use Buzz\Message\Request;
 use OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory;
+use OpenSky\Bundle\GigyaBundle\Tests\GigyaTestCase;
 
-class MessageFactoryTest extends \PHPUnit_Framework_TestCase
+class MessageFactoryTest extends GigyaTestCase
 {
+    private $factory;
+    private $router;
+    private $apiHost = 'https://socialize.gigya.com';
+    private $secret  = 'secret';
+    private $route   = 'gigya.api.login.redirect';
+
+    protected function setUp()
+    {
+        $this->router  = $this->getMockRouter();
+        $this->factory = new MessageFactory($this->router, $this->apiKey, $this->secret, $this->apiHost, $this->route);
+    }
+
     public function testSouldGenerateCorrectLoginRequest()
     {
-        $apiKey   = 'xxxxxx';
-        $secret   = 'zzzzzz';
-        $apiHost  = 'https://socialize.gigya.com';
         $provider = 'twitter';
-        $route    = 'gigya.api.login.redirect';
         $redirect = 'http://shopopensky.gigya/gigya';
-        $router   = $this->getMock('Symfony\Component\Routing\RouterInterface');
-        $factory  = new MessageFactory($router, $apiKey, $secret, $apiHost, $route);
-        $request  = new Request(Request::METHOD_POST, '/socialize.login', $apiHost);
+        $request  = new Request(Request::METHOD_POST, '/socialize.login', $this->apiHost);
 
         $request->setContent(http_build_query(array(
             'x_provider'    => $provider,
-            'client_id'     => $apiKey,
+            'client_id'     => $this->apiKey,
             'redirect_uri'  => $redirect,
             'response_type' => 'token'
         )));
 
-        $router->expects($this->once())
+        $this->router->expects($this->once())
             ->method('generate')
-            ->with($route, array())
+            ->with($this->route, array())
             ->will($this->returnValue($redirect));
 
-        $this->assertEquals($request, $factory->getLoginRequest($provider));
+        $this->assertEquals($request, $this->factory->getLoginRequest($provider));
+    }
+
+    public function testGetAccessTokenRequest()
+    {
+        $this->markTestSkipped();
+        $apiHost  = 'https://socialize.gigya.com';
+        $request  = new Request(Request::METHOD_POST, '/socialize.getToken', $apiHost);
+
+        $this->assertEquals($request, $this->factory->getAccessTokenRequest());
+    }
+
+    private function getMockRouter()
+    {
+        return $this->getMock('Symfony\Component\Routing\RouterInterface');
     }
 }
