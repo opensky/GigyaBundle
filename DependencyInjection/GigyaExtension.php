@@ -44,17 +44,10 @@ class GigyaExtension extends Extension
         $loader->load('socializer.xml');
 
         foreach ($configs as $config) {
-            if (isset($config['api_key'])) {
-                $container->setParameter('gigya.socializer.api_key', $config['api_key']);
-            }
-            if (isset($config['namespace'])) {
-                $container->setParameter('gigya.socializer.namespace', $config['namespace']);
-            }
-            if (isset($config['providers'])) {
-                $container->setParameter('gigya.socializer.providers', $config['providers']);
-            }
-            if (isset($config['secret'])) {
-                $container->setParameter('gigya.socializer.secret', $config['secret']);
+            foreach (array('api_key', 'namespace', 'providers', 'secret') as $key) {
+                if (isset($config[$key])) {
+                    $container->setParameter('gigya.socializer.'.$key, $config[$key]);
+                }
             }
         }
     }
