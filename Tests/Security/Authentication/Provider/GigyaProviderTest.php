@@ -26,7 +26,7 @@ class GigyaProviderTest extends GigyaTestCase
     }
 
     /**
-     * @expectedException Symfony\Component\Security\Core\Exception\UnsupportedAccountException
+     * @expectedException Symfony\Component\Security\Core\Exception\UnsupportedUserException
      */
     public function testShouldNotLoadUserByAccount()
     {
@@ -64,7 +64,7 @@ class GigyaProviderTest extends GigyaTestCase
         $userId      = '123';
         $token       = 'test';
         $accessToken = array('access_token' => $token);
-        $user        = $this->getMock('Symfony\Component\Security\Core\User\AccountInterface');
+        $user        = $this->getMockAccount();
 
         $user->expects($this->once())
             ->method('getRoles')
@@ -110,7 +110,7 @@ class GigyaProviderTest extends GigyaTestCase
 
     private function getMockAccount()
     {
-        return $this->getMock('Symfony\Component\Security\Core\User\AccountInterface');
+        return $this->getMock('Symfony\Component\Security\Core\User\UserInterface');
     }
 
     private function getSocializerMock()
@@ -125,6 +125,6 @@ class GigyaProviderTest extends GigyaTestCase
 
     private function getMockAccountChecker()
     {
-        return $this->getMock('Symfony\Component\Security\Core\User\AccountCheckerInterface');
+        return $this->getMock('Symfony\Component\Security\Core\User\UserCheckerInterface');
     }
 }

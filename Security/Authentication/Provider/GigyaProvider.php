@@ -3,11 +3,11 @@ namespace OpenSky\Bundle\GigyaBundle\Security\Authentication\Provider;
 
 use OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken;
 use OpenSky\Bundle\GigyaBundle\Socializer\SocializerInterface;
-use Symfony\Component\Security\Core\User\AccountInterface;
-use Symfony\Component\Security\Core\User\AccountCheckerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\UnsupportedAccountException;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 
@@ -16,17 +16,17 @@ class GigyaProvider implements AuthenticationProviderInterface
     protected $socializer;
     protected $accessToken;
     protected $userProvider;
-    protected $accountChecker;
+    protected $userChecker;
 
-    public function __construct(SocializerInterface $socializer, UserProviderInterface $userProvider = null, AccountCheckerInterface $accountChecker = null)
+    public function __construct(SocializerInterface $socializer, UserProviderInterface $userProvider = null, UserCheckerInterface $userChecker = null)
     {
-        if (null !== $userProvider && null === $accountChecker) {
+        if (null !== $userProvider && null === $userChecker) {
             throw new \InvalidArgumentException('$accountChecker cannot be null, if $userProvider is not null.');
         }
 
-        $this->socializer     = $socializer;
-        $this->userProvider   = $userProvider;
-        $this->accountChecker = $accountChecker;
+        $this->socializer   = $socializer;
+        $this->userProvider = $userProvider;
+        $this->userChecker  = $userChecker;
     }
 
     public function authenticate(TokenInterface $token)
@@ -64,12 +64,12 @@ class GigyaProvider implements AuthenticationProviderInterface
 
         $user = $this->userProvider->loadUserByUsername($uid);
 
-        if (! $user instanceof AccountInterface) {
+        if (! $user instanceof UserInterface) {
             throw new \RuntimeException('User provider did not return an implementation of account interface.');
         }
 
-        $this->accountChecker->checkPreAuth($user);
-        $this->accountChecker->checkPostAuth($user);
+        $this->userChecker->checkPreAuth($user);
+        $this->userChecker->checkPostAuth($user);
 
         return new GigyaToken($user, $user->getRoles());
     }
@@ -79,8 +79,8 @@ class GigyaProvider implements AuthenticationProviderInterface
      *
      * @param AccountInterface $user
      */
-    public function loadUserByAccount(AccountInterface $user)
+    public function loadUserByAccount(UserInterface $user)
     {
-        throw new UnsupportedAccountException('Account is not supported.');
+        throw new UnsupportedUserException('Account is not supported.');
     }
 }
