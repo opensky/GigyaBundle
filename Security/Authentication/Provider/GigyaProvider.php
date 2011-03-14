@@ -2,7 +2,7 @@
 namespace OpenSky\Bundle\GigyaBundle\Security\Authentication\Provider;
 
 use OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken;
-use OpenSky\Bundle\GigyaBundle\Socializer\Socializer;
+use OpenSky\Bundle\GigyaBundle\Socializer\SocializerInterface;
 use Symfony\Component\Security\Core\User\AccountInterface;
 use Symfony\Component\Security\Core\User\AccountCheckerInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -18,7 +18,7 @@ class GigyaProvider implements AuthenticationProviderInterface
     protected $userProvider;
     protected $accountChecker;
 
-    public function __construct(Socializer $socializer, UserProviderInterface $userProvider = null, AccountCheckerInterface $accountChecker = null)
+    public function __construct(SocializerInterface $socializer, UserProviderInterface $userProvider = null, AccountCheckerInterface $accountChecker = null)
     {
         if (null !== $userProvider && null === $accountChecker) {
             throw new \InvalidArgumentException('$accountChecker cannot be null, if $userProvider is not null.');
@@ -36,10 +36,11 @@ class GigyaProvider implements AuthenticationProviderInterface
         }
 
         try {
-            $accessToken = $this->socializer->getAccessToken();
+            $accessToken  = $this->socializer->getAccessToken();
 
             if (null !== $accessToken) {
-                return $this->createAuthenticatedToken($accessToken['access_token'], $accessToken['expires_in']);
+                $userId = $this->socializer->getUserId($accessToken['access_token']);
+                return $this->createAuthenticatedToken($userId);
             }
         } catch (AuthenticationException $failed) {
             throw $failed;
@@ -55,19 +56,22 @@ class GigyaProvider implements AuthenticationProviderInterface
         return $token instanceof GigyaToken;
     }
 
-    private function createAuthenticatedToken($accessToken, $expiresIn)
+    private function createAuthenticatedToken($uid)
     {
-//        if (null === $this->userProvider) {
-//            return new TwitterUserToken($uid);
-//        }
-//        $user = $this->userProvider->loadUserByUsername($uid);
-//        if (! $user instanceof AccountInterface) {
-//            throw new \RuntimeException(
-//            'User provider did not return an implementation of account interface.');
-//        }
-//        $this->accountChecker->checkPreAuth($user);
-//        $this->accountChecker->checkPostAuth($user);
-//        return new TwitterUserToken($user, $user->getRoles());
+        if (null === $this->userProvider) {
+            return new GigyaToken($uid);
+        }
+
+        $user = $this->userProvider->loadUserByUsername($uid);
+
+        if (! $user instanceof AccountInterface) {
+            throw new \RuntimeException('User provider did not return an implementation of account interface.');
+        }
+
+        $this->accountChecker->checkPreAuth($user);
+        $this->accountChecker->checkPostAuth($user);
+
+        return new GigyaToken($user, $user->getRoles());
     }
 
     /**

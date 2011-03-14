@@ -15,13 +15,13 @@ class GigyaProviderTest extends GigyaTestCase
 
     public function setUp()
     {
-        $this->socializer = $this->getSocializer($this->getMockClient(), $this->getMockMessageFactory());
+        $this->socializer = $this->getSocializerMock();
         $this->provider = new GigyaProvider($this->socializer);
     }
 
     public function testShouldSupportGigyaTokenOnly()
     {
-        $this->assertTrue($this->provider->supports(new GigyaToken('aabsd')));
+        $this->assertTrue($this->provider->supports(new GigyaToken()));
         $this->assertFalse($this->provider->supports($this->getMockToken()));
     }
 
@@ -38,12 +38,69 @@ class GigyaProviderTest extends GigyaTestCase
         $this->assertNull($this->provider->authenticate($this->getMockToken()));
     }
 
-    public function testShouldAuthenticateWithAccessToken()
+    public function testShouldAuthenticateWithAccessTokenAndNoUserProvider()
     {
-        $this->markTestSkipped();
-        $gigyaToken = $this->provider->authenticate($this->getMockToken());
+        $userId      = '123';
+        $token       = 'test';
+        $accessToken = array('access_token' => $token);
 
-        $this->assertInstanceOf('OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken', $gigyaToken);
+        $this->socializer->expects($this->once())
+            ->method('getAccessToken')
+            ->will($this->returnValue($accessToken));
+
+        $this->socializer->expects($this->once())
+            ->method('getUserId')
+            ->with($token)
+            ->will($this->returnValue($userId));
+
+        $gigya = $this->provider->authenticate(new GigyaToken());
+
+        $this->assertInstanceOf('OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken', $gigya);
+        $this->assertEquals($userId, $gigya->getUser());
+    }
+
+    public function testShouldAuthenticateWithAccessTokenAndUserProvider()
+    {
+        $userId      = '123';
+        $token       = 'test';
+        $accessToken = array('access_token' => $token);
+        $user        = $this->getMock('Symfony\Component\Security\Core\User\AccountInterface');
+
+        $user->expects($this->once())
+            ->method('getRoles')
+            ->will($this->returnValue(array()));
+
+        $provider = $this->getMockUserProvider();
+        $checker  = $this->getMockAccountChecker();
+
+        $gigyaProvider = new GigyaProvider($this->socializer, $provider, $checker);
+
+        $this->socializer->expects($this->once())
+            ->method('getAccessToken')
+            ->will($this->returnValue($accessToken));
+
+        $this->socializer->expects($this->once())
+            ->method('getUserId')
+            ->with($token)
+            ->will($this->returnValue($userId));
+
+        $provider->expects($this->once())
+            ->method('loadUserByUsername')
+            ->with($userId)
+            ->will($this->returnValue($user));
+
+        $checker->expects($this->once())
+            ->method('checkPreAuth')
+            ->with($user);
+
+        $checker->expects($this->once())
+            ->method('checkPostAuth')
+            ->with($user);
+
+        $gigya = $gigyaProvider->authenticate(new GigyaToken());
+
+        $this->assertInstanceOf('OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken', $gigya);
+        $this->assertEquals($user, $gigya->getUser());
     }
 
     private function getMockToken()
@@ -54,5 +111,20 @@ class GigyaProviderTest extends GigyaTestCase
     private function getMockAccount()
     {
         return $this->getMock('Symfony\Component\Security\Core\User\AccountInterface');
+    }
+
+    private function getSocializerMock()
+    {
+        return $this->getMock('OpenSky\Bundle\GigyaBundle\Socializer\SocializerInterface');
+    }
+
+    private function getMockUserProvider()
+    {
+        return $this->getMock('Symfony\Component\Security\Core\User\UserProviderInterface');
+    }
+
+    private function getMockAccountChecker()
+    {
+        return $this->getMock('Symfony\Component\Security\Core\User\AccountCheckerInterface');
     }
 }

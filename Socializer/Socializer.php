@@ -8,7 +8,7 @@ use OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory;
 use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
-class Socializer
+class Socializer implements SocializerInterface
 {
     const SIMPLE_SHARE = 'simpleShare';
     const MULTI_SELECT = 'multiSelect';
