@@ -12,6 +12,8 @@
         <parameter key="gigya.api.host">https://socialize.gigya.com</parameter>
         <parameter key="gigya.api.login.redirect">gigya_user_oauth_redirect</parameter>
         <parameter key="gigya.controller.class">OpenSky\Bundle\GigyaBundle\Controller\GigyaController</parameter>
+        <parameter key="gigya.templating.helper.socializer.class">OpenSky\Bundle\GigyaBundle\Helper\SocializerHelper</parameter>
+        <parameter key="gigya.twig.extension.socializer.class">OpenSky\Bundle\GigyaBundle\Extension\SocializerExtension</parameter>
     </parameters>
 
     <services>
@@ -32,15 +34,15 @@
             <argument>%gigya.api.login.redirect%</argument>
         </service>
 
-        <service id="templating.helper.gigya_socializer" class="OpenSky\Bundle\GigyaBundle\Helper\SocializerHelper">
+        <service id="gigya.templating.helper.socializer" class="%gigya.templating.helper.socializer.class%">
             <tag name="templating.helper" alias="gigya_socializer" />
             <argument type="service" id="gigya.socializer" />
             <argument>%gigya.socializer.namespace%</argument>
         </service>
 
-        <service id="twig.extension.gigya_socializer" class="OpenSky\Bundle\GigyaBundle\Extension\SocializerExtension">
+        <service id="gigya.twig.extension.socializer" class="%gigya.twig.extension.socializer.class%">
             <tag name="twig.extension" />
-            <argument type="service" id="templating.helper.gigya_socializer" />
+            <argument type="service" id="gigya.templating.helper.socializer" />
         </service>
 
         <service id="gigya.controller" class="%gigya.controller.class%">
