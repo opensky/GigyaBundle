@@ -61,6 +61,23 @@ class MessageFactoryTest extends GigyaTestCase
         $this->assertEquals($request, $this->factory->getAccessTokenRequest());
     }
 
+    public function testGetUserInfoRequest()
+    {
+        $token   = 'access-token';
+        $request = new Request(Request::METHOD_POST, '/socialize.getUserInfo', $this->apiHost);
+
+        $request->setHeaders(array(
+            'Content-Type'  => 'application/x-www-form-urlencoded',
+            'Authorization' => 'OAuth '.$token,
+        ));
+
+        $request->setContent(http_build_query(array(
+            'format' => 'xml',
+        )));
+
+        $this->assertEquals($request, $this->factory->getUserInfoRequest($token));
+    }
+
     private function getMockRouter()
     {
         return $this->getMock('Symfony\Component\Routing\RouterInterface');

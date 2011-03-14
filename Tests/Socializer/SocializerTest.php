@@ -131,4 +131,119 @@ class SocializerTest extends GigyaTestCase
 
         $this->socializer->getAccessToken();
     }
+
+    public function testGetUserInfo()
+    {
+        $token    = 'asd3kwe203jsfje349sjuw123499fv9rnfkv9AmsdFngmsfj';
+        $request  = new Request();
+        $response = new Response();
+
+        $response->setContent(
+'<?xml version="1.0" encoding="utf-8" ?>
+<socialize.getUserInfoResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:com:gigya:api http://socialize.api.gigya.com/schema" xmlns="urn:com:gigya:api">
+    <statusCode>200</statusCode>
+    <statusReason>OK</statusReason>
+    <callId>09e1f4ae35124d03a07761b65cd39ca2</callId>
+    <UID>000000</UID>
+    <isSiteUID>false</isSiteUID>
+    <UIDSignature>0000</UIDSignature>
+    <signatureTimestamp>2009-06-21 12:07:09</signatureTimestamp>
+    <isSiteUser>true</isSiteUser>
+    <isConnected>true</isConnected>
+    <loginProvider>MySpace</loginProvider>
+    <loginProviderUID>iuyq3ieuyh</loginProviderUID>
+    <identities>
+        <identity>
+            <provider>myspace</provider>
+            <providerUID>000000</providerUID>
+            <isLoginIdentity>true</isLoginIdentity>
+            <allowsLogin>true</allowsLogin>
+            <nickname>Bobo</nickname>
+            <thumbnailURL>http://c4.ac-images.myspacecdn.com/images02/11/00000.jpg</thumbnailURL>
+            <gender>m</gender>
+            <age>47</age>
+            <birthDay>11</birthDay>
+            <birthMonth>8</birthMonth>
+            <birthYear>1962</birthYear>
+            <country>IL</country>
+            <profileURL>http://www.myspace.com/00000000</profileURL>
+            <proxiedEmail />
+            <isExpiredSession>false</isExpiredSession>
+        </identity>
+        <identity>
+            <provider>facebook</provider>
+            <providerUID>000000</providerUID>
+            <isLoginIdentity>false</isLoginIdentity>
+            <allowsLogin>false</allowsLogin>
+            <nickname>Bobi</nickname>
+            <photoURL>http://profile.ak.facebook.com/v222/15/34/00.jpg</photoURL>
+            <thumbnailURL>http://profile.ak.facebook.com/v222/15/34/q770169391_5172.jpg</thumbnailURL>
+            <firstName>Bobi</firstName>
+            <lastName>A</lastName>
+            <gender>f</gender>
+            <age>37</age>
+            <birthDay>31</birthDay>
+            <birthMonth>5</birthMonth>
+            <birthYear>1972</birthYear>
+            <email>bla@gmail.com</email>
+            <city>Tel Aviv</city>
+            <profileURL>http://www.facebook.com/profile.php?id=00</profileURL>
+            <proxiedEmail/>
+            <isExpiredSession>false</isExpiredSession>
+        </identity>
+        <identity>
+            <provider>twitter</provider>
+            <providerUID>000000</providerUID>
+            <isLoginIdentity>false</isLoginIdentity>
+            <allowsLogin>true</allowsLogin>
+            <nickname>Bobu</nickname>
+            <photoURL>http://static.twitter.com/images/default_profile_normal.png</photoURL>
+            <firstName>Bobu</firstName>
+            <lastName>A</lastName>
+            <profileURL>http://twitter.com/shirlyleshed</profileURL>
+            <proxiedEmail />
+            <isExpiredSession>false</isExpiredSession>
+        </identity>
+        <identity>
+            <provider>yahoo</provider>
+            <providerUID>00000</providerUID>
+            <isLoginIdentity>false</isLoginIdentity>
+            <allowsLogin>true</allowsLogin>
+            <nickname>Shirly</nickname>
+            <thumbnailURL>http://a323.yahoofs.com/coreid/000.jpg?ciAgMZLB5RbqrC1K</thumbnailURL>
+            <gender>f</gender>
+            <profileURL>http://profiles.yahoo.com/u/000</profileURL>
+            <proxiedEmail />
+            <isExpiredSession>false</isExpiredSession>
+        </identity>
+    </identities>
+    <nickname>Bobo</nickname>
+    <thumbnailURL>http://c4.ac-images.myspacecdn.com/images02/11/0000.jpg</thumbnailURL>
+    <gender>m</gender>
+    <age>47</age>
+    <birthDay>11</birthDay>
+    <birthMonth>8</birthMonth>
+    <birthYear>1962</birthYear>
+    <country>IL</country>
+    <profileURL>http://www.myspace.com/00000000</profileURL>
+    <capabilities>Login, Friends, Notifications, Actions, Status</capabilities>
+    <proxiedEmail />
+</socialize.getUserInfoResponse>'
+        );
+
+        $this->factory->expects($this->once())
+            ->method('getUserInfoRequest')
+            ->with($token)
+            ->will($this->returnValue($request));
+
+        $this->factory->expects($this->once())
+            ->method('getResponse')
+            ->will($this->returnValue($response));
+
+        $this->client->expects($this->once())
+            ->method('send')
+            ->with($request, $response);
+
+        $this->assertEquals('000000', $this->socializer->getUserId($token));
+    }
 }

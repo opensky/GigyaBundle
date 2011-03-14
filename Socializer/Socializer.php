@@ -115,4 +115,25 @@ class Socializer
 
         return $result;
     }
+
+    public function getUserId($token)
+    {
+        $response = $this->factory->getResponse();
+
+        $this->client->send($this->factory->getUserInfoRequest($token), $response);
+
+        libxml_use_internal_errors(true);
+
+        $result = simplexml_load_string($response->getContent());
+
+        if (!$result) {
+            throw new \Exception('Gigya API returned invalid response');
+        }
+
+        if ($result->errorCode) {
+            throw new AuthenticationException($result->errorMessage, $result->errorDetails, $result->errorCode);
+        }
+
+        return (string) $result->UID;
+    }
 }

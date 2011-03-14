@@ -52,7 +52,23 @@ class MessageFactory
         ));
 
         $request->setContent(http_build_query(array(
-            'grant_type'    => 'none',
+            'grant_type' => 'none',
+        )));
+
+        return $request;
+    }
+
+    public function getUserInfoRequest($token)
+    {
+        $request = new Request(Request::METHOD_POST, '/socialize.getUserInfo', $this->host);
+
+        $request->setHeaders(array(
+            'Content-Type'  => 'application/x-www-form-urlencoded',
+            'Authorization' => 'OAuth '.$token,
+        ));
+
+        $request->setContent(http_build_query(array(
+            'format' => 'xml',
         )));
 
         return $request;
