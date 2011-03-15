@@ -14,7 +14,6 @@
         <parameter key="gigya.controller.class">OpenSky\Bundle\GigyaBundle\Controller\GigyaController</parameter>
         <parameter key="gigya.templating.helper.socializer.class">OpenSky\Bundle\GigyaBundle\Helper\SocializerHelper</parameter>
         <parameter key="gigya.twig.extension.socializer.class">OpenSky\Bundle\GigyaBundle\Extension\SocializerExtension</parameter>
-        <parameter key="gigya.auth.factory.class">OpenSky\Bundle\GigyaBundle\DependencyInjection\Security\Factory\GigyaFactory</parameter>
         <parameter key="gigya.auth.class">OpenSky\Bundle\GigyaBundle\Security\Authentication\Provider\GigyaProvider</parameter>
         <parameter key="gigya.security.authentication.listener.class">OpenSky\Bundle\GigyaBundle\Security\Firewall\GigyaListener</parameter>
         <parameter key="gigya.security.authentication.entry_point.class">OpenSky\Bundle\GigyaBundle\Security\EntryPoint\GigyaAuthenticationEntryPoint</parameter>
@@ -53,11 +52,7 @@
             <argument type="service" id="gigya.socializer" />
         </service>
 
-        <service id="gigya.auth.factory" class="%gigya.auth.factory.class%" public="false">
-            <tag name="security.listener.factory" />
-        </service>
-
-         <service id="gigya.auth" class="%gigya.auth.class%" public="false">
+        <service id="gigya.auth" class="%gigya.auth.class%" public="false">
             <argument type="service" id="fos_facebook.api" />
         </service>
 
