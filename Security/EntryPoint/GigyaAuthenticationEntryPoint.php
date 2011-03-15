@@ -2,6 +2,7 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Security\EntryPoint;
 
+use OpenSky\Bundle\GigyaBundle\Socializer\SocializerInterface;
 use Symfony\Component\EventDispatcher\EventInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -15,7 +16,12 @@ class GigyaAuthenticationEntryPoint implements AuthenticationEntryPointInterface
      */
     private $engine;
 
-    public function __construct(EngineInterface $engine)
+    /**
+     * @var OpenSky\Bundle\GigyaBundle\Socializer\SocializerInterface
+     */
+    private $socializer;
+
+    public function __construct(SocializerInterface $socializer, EngineInterface $engine)
     {
         $this->engine = $engine;
     }
