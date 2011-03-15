@@ -24,5 +24,4 @@ class GigyaAuthenticationEntryPoint implements AuthenticationEntryPointInterface
     {
         return $this->engine->render('GigyaBundle:Example:login_popup.html.twig', array());
     }
-
 }
