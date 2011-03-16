@@ -8,7 +8,7 @@ gigya_user_oauth_redirect:
     defaults:     { _controller: GigyaBundle:User:oathRedirect }
     requirements: { _method: get }
 
-gigya_user_oauth_popup:
+gigya_user_oauth_login:
     pattern:      /user/popup/{provider}
     defaults:     { _controller: gigya.controller:login }
     requirements: { _method: get, provider: '[\w\d\-]{1,32}' }

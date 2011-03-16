@@ -26,10 +26,6 @@ class MessageFactoryTest extends GigyaTestCase
         $redirect = 'http://shopopensky.gigya/gigya';
         $request  = new Request(Request::METHOD_POST, '/socialize.login', $this->apiHost);
 
-        $request->setHeaders(array(
-            'Content-Type'  => 'application/x-www-form-urlencoded'
-        ));
-
         $request->setContent(http_build_query(array(
             'x_provider'    => $provider,
             'client_id'     => $this->apiKey,

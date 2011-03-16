@@ -28,16 +28,14 @@ class MessageFactory
     {
         $request = new Request(Request::METHOD_POST, '/socialize.login', $this->host);
 
-        $request->setHeaders(array(
-            'Content-Type' => 'application/x-www-form-urlencoded'
-        ));
-
         $request->setContent(http_build_query(array(
             'x_provider'    => $provider,
             'client_id'     => $this->key,
-            'redirect_uri'  => $this->router->generate($this->redirect, array()),
+            'redirect_uri'  => $this->router->generate($this->redirect, array(), true),
             'response_type' => 'token'
         )));
+
+//        var_dump($request); die();
 
         return $request;
     }
