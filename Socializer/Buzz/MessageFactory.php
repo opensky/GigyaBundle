@@ -9,19 +9,22 @@ use Symfony\Component\Routing\RouterInterface;
 
 class MessageFactory
 {
-    private $router;
     private $key;
     private $host;
-    private $redirect;
     private $secret;
+    private $redirectUri;
+    private $code;
 
-    public function __construct(RouterInterface $router, $key, $secret, $host, $redirect)
+    public function __construct($key, $secret, $host)
     {
-        $this->router   = $router;
         $this->key      = $key;
         $this->secret   = $secret;
         $this->host     = $host;
-        $this->redirect = $redirect;
+    }
+
+    public function setRedirectUri($redirectUri)
+    {
+        $this->redirectUri = $redirectUri;
     }
 
     public function getLoginRequest($provider)
@@ -31,26 +34,26 @@ class MessageFactory
         $request->setContent(http_build_query(array(
             'x_provider'    => $provider,
             'client_id'     => $this->key,
-            'redirect_uri'  => $this->router->generate($this->redirect, array(), true),
-            'response_type' => 'token'
+            'redirect_uri'  => $this->redirectUri,
+            'response_type' => 'code'
         )));
-
-//        var_dump($request); die();
 
         return $request;
     }
 
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+
     public function getAccessTokenRequest()
     {
-        $request = new Request(Request::METHOD_POST, '/socialize.getToken', $this->host);
-
-        $request->setHeaders(array(
-            'Content-Type'  => 'application/x-www-form-urlencoded',
-            'Authorization' => 'Basic '.base64_encode($this->key.':'.$this->secret),
-        ));
+        $request = new Request(Request::METHOD_POST, '/socialize.getToken?client_id='.$this->key.'&client_secret='.$this->secret, $this->host);
 
         $request->setContent(http_build_query(array(
-            'grant_type' => 'none',
+            'grant_type'   => 'authorization_code',
+            'code'         => $this->code,
+            'redirect_uri' => $this->redirectUri,
         )));
 
         return $request;
@@ -58,12 +61,7 @@ class MessageFactory
 
     public function getUserInfoRequest($token)
     {
-        $request = new Request(Request::METHOD_POST, '/socialize.getUserInfo', $this->host);
-
-        $request->setHeaders(array(
-            'Content-Type'  => 'application/x-www-form-urlencoded',
-            'Authorization' => 'OAuth '.$token,
-        ));
+        $request = new Request(Request::METHOD_POST, '/socialize.getUserInfo?apiKey='.$this->key.'&secret='.$this->secret.'&oauth_token='.$token, $this->host);
 
         $request->setContent(http_build_query(array(
             'format' => 'xml',

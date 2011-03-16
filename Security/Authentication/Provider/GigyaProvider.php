@@ -13,10 +13,10 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 
 class GigyaProvider implements AuthenticationProviderInterface
 {
-    protected $socializer;
-    protected $accessToken;
-    protected $userProvider;
-    protected $userChecker;
+    private $socializer;
+    private $accessToken;
+    private $userProvider;
+    private $userChecker;
 
     public function __construct(SocializerInterface $socializer, UserProviderInterface $userProvider = null, UserCheckerInterface $userChecker = null)
     {

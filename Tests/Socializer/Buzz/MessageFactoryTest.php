@@ -9,15 +9,13 @@ use OpenSky\Bundle\GigyaBundle\Tests\GigyaTestCase;
 class MessageFactoryTest extends GigyaTestCase
 {
     private $factory;
-    private $router;
-    private $apiHost = 'https://socialize.gigya.com';
-    private $secret  = 'secret';
-    private $route   = 'gigya.api.login.redirect';
+    private $apiHost  = 'https://socialize.gigya.com';
+    private $secret   = 'secret';
 
     protected function setUp()
     {
         $this->router  = $this->getMockRouter();
-        $this->factory = new MessageFactory($this->router, $this->apiKey, $this->secret, $this->apiHost, $this->route);
+        $this->factory = new MessageFactory($this->apiKey, $this->secret, $this->apiHost);
     }
 
     public function testSouldGenerateCorrectLoginRequest()
@@ -26,32 +24,24 @@ class MessageFactoryTest extends GigyaTestCase
         $redirect = 'http://shopopensky.gigya/gigya';
         $request  = new Request(Request::METHOD_POST, '/socialize.login', $this->apiHost);
 
+        $this->factory->setRedirectUri($redirect);
+
         $request->setContent(http_build_query(array(
             'x_provider'    => $provider,
             'client_id'     => $this->apiKey,
             'redirect_uri'  => $redirect,
-            'response_type' => 'token'
+            'response_type' => 'code'
         )));
 
-        $this->router->expects($this->once())
-            ->method('generate')
-            ->with($this->route, array())
-            ->will($this->returnValue($redirect));
-
-        $this->assertEquals($request, $this->factory->getLoginRequest($provider));
+        $this->assertEquals($request, $this->factory->getLoginRequest($provider, $redirect));
     }
 
     public function testGetAccessTokenRequest()
     {
-        $request  = new Request(Request::METHOD_POST, '/socialize.getToken', $this->apiHost);
-
-        $request->setHeaders(array(
-            'Content-Type'  => 'application/x-www-form-urlencoded',
-            'Authorization' => 'Basic '.base64_encode($this->apiKey.':'.$this->secret),
-        ));
+        $request  = new Request(Request::METHOD_POST, '/socialize.getToken?client_id='.$this->apiKey.'&client_secret='.$this->secret, $this->apiHost);
 
         $request->setContent(http_build_query(array(
-            'grant_type'    => 'none',
+            'grant_type'    => 'authorization_code',
         )));
 
         $this->assertEquals($request, $this->factory->getAccessTokenRequest());
@@ -60,12 +50,7 @@ class MessageFactoryTest extends GigyaTestCase
     public function testGetUserInfoRequest()
     {
         $token   = 'access-token';
-        $request = new Request(Request::METHOD_POST, '/socialize.getUserInfo', $this->apiHost);
-
-        $request->setHeaders(array(
-            'Content-Type'  => 'application/x-www-form-urlencoded',
-            'Authorization' => 'OAuth '.$token,
-        ));
+        $request = new Request(Request::METHOD_POST, '/socialize.getUserInfo?apiKey='.$this->apiKey.'&secret='.$this->secret.'&oauth_token='.$token, $this->apiHost);
 
         $request->setContent(http_build_query(array(
             'format' => 'xml',

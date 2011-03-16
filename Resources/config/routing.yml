@@ -1,13 +1,3 @@
-gigya_user_find_by_uid:
-    pattern:      /user/find-by-uid
-    defaults:     { _controller: GigyaBundle:User:findByUID }
-    requirements: { _method: get }
-
-gigya_user_oauth_redirect:
-    pattern:      /user/oath-redirect
-    defaults:     { _controller: GigyaBundle:User:oathRedirect }
-    requirements: { _method: get }
-
 gigya_user_oauth_login:
     pattern:      /user/popup/{provider}
     defaults:     { _controller: gigya.controller:login }

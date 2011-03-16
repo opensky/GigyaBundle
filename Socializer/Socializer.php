@@ -86,6 +86,7 @@ class Socializer implements SocializerInterface
 
     /**
      * @param string $provider
+     * @param string $redirect
      *
      * @return Buzz\Message\Response
      */
@@ -104,13 +105,14 @@ class Socializer implements SocializerInterface
     public function getAccessToken()
     {
         $response = $this->factory->getResponse();
+        $request  = $this->factory->getAccessTokenRequest();
 
-        $this->client->send($this->factory->getAccessTokenRequest(), $response);
+        $this->client->send($request, $response);
 
         $result = json_decode($response->getContent(), true);
 
         if (isset($result['error'])) {
-            throw new AuthenticationException($result['error_description']);
+            return null;
         }
 
         return $result;
@@ -119,8 +121,9 @@ class Socializer implements SocializerInterface
     public function getUserId($token)
     {
         $response = $this->factory->getResponse();
+        $request  = $this->factory->getUserInfoRequest($token);
 
-        $this->client->send($this->factory->getUserInfoRequest($token), $response);
+        $this->client->send($request, $response);
 
         libxml_use_internal_errors(true);
 
@@ -130,8 +133,8 @@ class Socializer implements SocializerInterface
             throw new \Exception('Gigya API returned invalid response');
         }
 
-        if ($result->errorCode) {
-            throw new AuthenticationException($result->errorMessage, $result->errorDetails, $result->errorCode);
+        if ((string) $result->errorCode) {
+            throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorDetails, (string) $result->errorCode);
         }
 
         return (string) $result->UID;

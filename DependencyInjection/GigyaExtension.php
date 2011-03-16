@@ -44,7 +44,7 @@ class GigyaExtension extends Extension
         $loader->load('socializer.xml');
 
         foreach ($configs as $config) {
-            foreach (array('api_key', 'namespace', 'providers', 'secret') as $key) {
+            foreach (array('api_key', 'namespace', 'providers', 'secret', 'redirect_route') as $key) {
                 if (isset($config[$key])) {
                     $container->setParameter('gigya.socializer.'.$key, $config[$key]);
                 }

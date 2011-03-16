@@ -45,6 +45,7 @@ class SocializerTest extends GigyaTestCase
     public function testLogin()
     {
         $provider = 'twitter';
+        $redirect = 'http://shopopensky.com';
         $request  = new Request();
         $response = new Response();
 
@@ -61,7 +62,7 @@ class SocializerTest extends GigyaTestCase
             ->method('send')
             ->with($request, $response);
 
-        $this->assertSame($response, $this->socializer->login($provider));
+        $this->assertSame($response, $this->socializer->login($provider, $redirect));
     }
 
     public function testGetAccessToken()
@@ -98,9 +99,6 @@ class SocializerTest extends GigyaTestCase
         ), $this->socializer->getAccessToken());
     }
 
-    /**
-     * @expectedException Symfony\Component\Security\Core\Exception\AuthenticationException
-     */
     public function testShouldNotAuthorize()
     {
         $request  = new Request();
@@ -129,7 +127,7 @@ class SocializerTest extends GigyaTestCase
             ->method('send')
             ->with($request, $response);
 
-        $this->socializer->getAccessToken();
+        $this->assertNull($this->socializer->getAccessToken());
     }
 
     public function testGetUserInfo()
