@@ -41,7 +41,7 @@
             <argument>%gigya.socializer.namespace%</argument>
         </service>
 
-        <service id="gigya.twig.extension.socializer" class="%gigya.twig.extension.socializer.class%">
+        <service id="gigya.twig.extension.socializer" class="%gigya.twig.extension.socializer.class%" public="false">
             <tag name="twig.extension" />
             <argument type="service" id="gigya.templating.helper.socializer" />
         </service>
