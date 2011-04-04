@@ -62,11 +62,6 @@
                 <argument type="service" id="gigya.api.message_factory" />
             </call>
         </service>
-
-        <service id="gigya.security.authentication.entry_point" class="%gigya.security.authentication.entry_point.class%" public="false" abstract="true">
-            <argument type="service" id="gigya.socializer" />
-            <argument type="service" id="templating" />
-        </service>
     </services>
 
 </container>

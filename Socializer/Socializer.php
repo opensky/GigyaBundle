@@ -2,13 +2,17 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Socializer;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 use Buzz\Client\ClientInterface;
 use Buzz\Message\Response;
+use OpenSky\Bundle\GigyaBundle\Document\User;
 use OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory;
 use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class Socializer implements SocializerInterface
+class Socializer implements SocializerInterface, UserProviderInterface
 {
     const SIMPLE_SHARE = 'simpleShare';
     const MULTI_SELECT = 'multiSelect';
@@ -118,7 +122,7 @@ class Socializer implements SocializerInterface
         return $result;
     }
 
-    public function getUserId($token)
+    public function getUser($token)
     {
         $response = $this->factory->getResponse();
         $request  = $this->factory->getUserInfoRequest($token);
@@ -137,6 +141,80 @@ class Socializer implements SocializerInterface
             throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorDetails, (string) $result->errorCode);
         }
 
-        return (string) $result->UID;
+        $user = new User((string) $result->UID, (string) $result->loginProvider);
+
+        foreach ($result->identities->children() as $identity) {
+            if ((string) $identity->provider === $user->getProvider()) {
+                $properties = array(
+                    'nickname', 'photoUrl', 'thumbnailUrl', 'firstName',
+                    'lastName', 'gender', 'age', 'email', 'city', 'state',
+                    'zip', 'profileUrl'
+                );
+
+                foreach ($properties as $property) {
+                    if (isset($identity->{$property})) {
+                        $user->{'set'.ucfirst($property)}((string) $identity->{$property});
+                    }
+                }
+            }
+        }
+
+        return $user;
     }
+
+    public function loadUser(UserInterface $user)
+    {
+//        $response = $this->factory->getResponse();
+//        $request  = $this->factory->getUserInfoReloadRequest($user->getUsername());
+//
+//        $this->client->send($request, $response);
+//
+//        libxml_use_internal_errors(true);
+//
+//        $result = simplexml_load_string($response->getContent());
+//
+//        if (!$result) {
+//            var_dump($result); exit('asd');
+//
+//            throw new \Exception('Gigya API returned invalid response');
+//        }
+//
+//        if ((string) $result->errorCode) {
+//            exit((string) $result->errorMessage);
+//            throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorDetails, (string) $result->errorCode);
+//        }
+//
+//        $user = new User((string) $result->UID, (string) $result->loginProvider);
+//
+//        foreach ($result->identities as $identity) {
+//            if ((string) $identity->provider === $user->getProvider()) {
+//                $properties = array(
+//                    'nickname', 'photoUrl', 'thumbnailUrl', 'firstName',
+//                    'lastName', 'gender', 'age', 'email', 'city', 'state',
+//                    'zip', 'profileUrl'
+//                );
+//
+//                foreach ($properties as $property) {
+//                    if (isset($identity->{$property})) {
+//                        $user->{'set'.ucfirst($property)}((string) $identity->{$property});
+//                    }
+//                }
+//            }
+//        }
+//        var_dump($user); exit('asd');
+//
+        return $user;
+    }
+
+    public function loadUserByUsername($username)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public function supportsClass($class)
+    {
+        return $class === 'OpenSky\Bundle\GigyaBundle\Document\User';
+    }
+
 }

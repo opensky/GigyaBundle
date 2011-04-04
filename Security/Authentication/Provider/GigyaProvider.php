@@ -39,8 +39,8 @@ class GigyaProvider implements AuthenticationProviderInterface
             $accessToken  = $this->socializer->getAccessToken();
 
             if (null !== $accessToken) {
-                $userId = $this->socializer->getUserId($accessToken['access_token']);
-                return $this->createAuthenticatedToken($userId);
+                $user = $this->socializer->getUser($accessToken['access_token']);
+                return $this->createAuthenticatedToken($user);
             }
         } catch (AuthenticationException $failed) {
             throw $failed;
@@ -56,13 +56,13 @@ class GigyaProvider implements AuthenticationProviderInterface
         return $token instanceof GigyaToken;
     }
 
-    private function createAuthenticatedToken($uid)
+    private function createAuthenticatedToken(UserInterface $user)
     {
         if (null === $this->userProvider) {
-            return new GigyaToken($uid);
+            return new GigyaToken($user, $user->getRoles());
         }
 
-        $user = $this->userProvider->loadUserByUsername($uid);
+        $user = $this->userProvider->loadUserByUsername($user->getUsername());
 
         if (! $user instanceof UserInterface) {
             throw new \RuntimeException('User provider did not return an implementation of account interface.');

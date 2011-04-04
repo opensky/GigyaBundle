@@ -70,6 +70,16 @@ class MessageFactory
         return $request;
     }
 
+    public function getUserInfoReloadRequest($uid)
+    {
+        $request = new Request(Request::METHOD_POST, '/socialize.getUserInfo?apiKey='.$this->key.'&secret='.$this->secret.'&uid='.$uid, $this->host);
+
+        $request->setContent(http_build_query(array(
+            'format' => 'xml',
+        )));
+
+        return $request;
+    }
     public function getResponse()
     {
         return new Response();

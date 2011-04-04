@@ -26,20 +26,6 @@ class GigyaFactory extends AbstractFactory
         return 'gigya.auth';
     }
 
-    protected function createEntryPoint($container, $id, $config, $defaultEntryPointId)
-    {
-        $entryPointId = 'gigya.security.authentication.entry_point.'.$id;
-        $container
-            ->setDefinition($entryPointId, new DefinitionDecorator('gigya.security.authentication.entry_point'))
-            ->setArgument(1, $config)
-        ;
-
-        // set options to container for use by other classes
-        $container->setParameter('gigya.options.'.$id, $config);
-
-        return $entryPointId;
-    }
-
     protected function getListenerId()
     {
         return 'gigya.security.authentication.listener';

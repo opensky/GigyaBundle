@@ -11,5 +11,5 @@ interface SocializerInterface
     function addUserActionByKey($userAction, $key);
     function login($provider);
     function getAccessToken();
-    function getUserId($token);
+    function getUser($token);
 }
