@@ -50,7 +50,7 @@ class User implements UserInterface
     /**
      * @var string
      */
-    private $thimbnailUrl;
+    private $thumbnailUrl;
 
     /**
      * @var string
@@ -185,14 +185,14 @@ class User implements UserInterface
         $this->photoUrl = $photoUrl;
     }
 
-    public function getThimbnailUrl()
+    public function getThumbnailUrl()
     {
-        return $this->thimbnailUrl;
+        return $this->thumbnailUrl;
     }
 
-    public function setThimbnailUrl($thimbnailUrl)
+    public function setThumbnailUrl($thumbnailUrl)
     {
-        $this->thimbnailUrl = $thimbnailUrl;
+        $this->thumbnailUrl = $thumbnailUrl;
     }
 
     public function getFirstName()
@@ -240,7 +240,7 @@ class User implements UserInterface
         return $this->birthday;
     }
 
-    public function setBirthday($birthday)
+    public function setBirthday(\DateTime $birthday)
     {
         $this->birthday = $birthday;
     }

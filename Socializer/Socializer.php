@@ -2,14 +2,13 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Socializer;
 
-use Symfony\Component\Security\Core\User\UserInterface;
-
 use Buzz\Client\ClientInterface;
 use Buzz\Message\Response;
 use OpenSky\Bundle\GigyaBundle\Document\User;
 use OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory;
 use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class Socializer implements SocializerInterface, UserProviderInterface
@@ -141,20 +140,37 @@ class Socializer implements SocializerInterface, UserProviderInterface
             throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorDetails, (string) $result->errorCode);
         }
 
-        $user = new User((string) $result->UID, (string) $result->loginProvider);
+        $user = new User((string) $result->UID, strtolower((string) $result->loginProvider));
 
         foreach ($result->identities->children() as $identity) {
             if ((string) $identity->provider === $user->getProvider()) {
                 $properties = array(
-                    'nickname', 'photoUrl', 'thumbnailUrl', 'firstName',
-                    'lastName', 'gender', 'age', 'email', 'city', 'state',
-                    'zip', 'profileUrl'
+                    'nickname', 'firstName', 'lastName', 'gender', 'age',
+                    'email', 'city', 'state', 'zip', 'country'
                 );
 
                 foreach ($properties as $property) {
                     if (isset($identity->{$property})) {
                         $user->{'set'.ucfirst($property)}((string) $identity->{$property});
                     }
+                }
+
+                $urls = array(
+                    'thumbnailURL' => 'thumbnailUrl',
+                    'profileURL'   => 'profileUrl',
+                    'photoURL'     => 'photoUrl',
+                );
+
+                foreach ($urls as $property => $setter) {
+                    if (isset($identity->{$property})) {
+                        $user->{'set'.ucfirst($setter)}((string) $identity->{$property});
+                    }
+                }
+
+                if (isset($identity->{'birthMonth'}) &&
+                    isset($identity->{'birthDay'}) &&
+                    isset($identity->{'birthYear'})) {
+                    $user->setBirthday(\DateTime::createFromFormat('n-j-Y H:i', sprintf('%s-%s-%s 00:00', (string) $identity->{'birthMonth'}, (string) $identity->{'birthDay'}, (string) $identity->{'birthYear'})));
                 }
             }
         }

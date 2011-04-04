@@ -45,6 +45,7 @@ class GigyaProvider implements AuthenticationProviderInterface
         } catch (AuthenticationException $failed) {
             throw $failed;
         } catch (\Exception $failed) {
+            var_dump($failed->getMessage()); die();
             throw new AuthenticationException('Unknown error', $failed->getMessage(), $failed->getCode(), $failed);
         }
 

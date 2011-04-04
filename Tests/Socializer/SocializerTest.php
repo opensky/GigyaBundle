@@ -2,6 +2,8 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Tests\Socializer;
 
+use OpenSky\Bundle\GigyaBundle\Document\User;
+
 use Buzz\Message\Request;
 use Buzz\Message\Response;
 use OpenSky\Bundle\GigyaBundle\Socializer\Socializer;
@@ -136,35 +138,56 @@ class SocializerTest extends GigyaTestCase
         $request  = new Request();
         $response = new Response();
 
+        $ucProvider   = 'MySpace';
+        $provider     = 'myspace';
+        $uid          = '000000';
+        $nickname     = 'Bobo';
+        $thumbnailUrl = 'http://c4.ac-images.myspacecdn.com/images02/11/00000.jpg';
+        $gender       = 'm';
+        $age          = 47;
+        $birthday     = new \DateTime('08-11-1962');
+        $country      = 'IL';
+        $profileUrl   = 'http://www.myspace.com/00000000';
+
+        $user = new User($uid, $provider);
+
+        $user->setNickname($nickname);
+        $user->setThumbnailUrl($thumbnailUrl);
+        $user->setGender($gender);
+        $user->setAge($age);
+        $user->setBirthday($birthday);
+        $user->setCountry($country);
+        $user->setProfileUrl($profileUrl);
+
         $response->setContent(
 '<?xml version="1.0" encoding="utf-8" ?>
 <socialize.getUserInfoResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:com:gigya:api http://socialize.api.gigya.com/schema" xmlns="urn:com:gigya:api">
     <statusCode>200</statusCode>
     <statusReason>OK</statusReason>
     <callId>09e1f4ae35124d03a07761b65cd39ca2</callId>
-    <UID>000000</UID>
+    <UID>'.$uid.'</UID>
     <isSiteUID>false</isSiteUID>
     <UIDSignature>0000</UIDSignature>
     <signatureTimestamp>2009-06-21 12:07:09</signatureTimestamp>
     <isSiteUser>true</isSiteUser>
     <isConnected>true</isConnected>
-    <loginProvider>MySpace</loginProvider>
+    <loginProvider>'.$ucProvider.'</loginProvider>
     <loginProviderUID>iuyq3ieuyh</loginProviderUID>
     <identities>
         <identity>
-            <provider>myspace</provider>
-            <providerUID>000000</providerUID>
+            <provider>'.$provider.'</provider>
+            <providerUID>'.$uid.'</providerUID>
             <isLoginIdentity>true</isLoginIdentity>
             <allowsLogin>true</allowsLogin>
-            <nickname>Bobo</nickname>
-            <thumbnailURL>http://c4.ac-images.myspacecdn.com/images02/11/00000.jpg</thumbnailURL>
-            <gender>m</gender>
-            <age>47</age>
-            <birthDay>11</birthDay>
-            <birthMonth>8</birthMonth>
-            <birthYear>1962</birthYear>
-            <country>IL</country>
-            <profileURL>http://www.myspace.com/00000000</profileURL>
+            <nickname>'.$nickname.'</nickname>
+            <thumbnailURL>'.$thumbnailUrl.'</thumbnailURL>
+            <gender>'.$gender.'</gender>
+            <age>'.$age.'</age>
+            <birthDay>'.$birthday->format('j').'</birthDay>
+            <birthMonth>'.$birthday->format('n').'</birthMonth>
+            <birthYear>'.$birthday->format('Y').'</birthYear>
+            <country>'.$country.'</country>
+            <profileURL>'.$profileUrl.'</profileURL>
             <proxiedEmail />
             <isExpiredSession>false</isExpiredSession>
         </identity>
@@ -242,6 +265,6 @@ class SocializerTest extends GigyaTestCase
             ->method('send')
             ->with($request, $response);
 
-        $this->assertEquals('000000', $this->socializer->getUserId($token));
+        $this->assertEquals($user, $this->socializer->getUser($token));
     }
 }

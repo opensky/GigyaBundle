@@ -2,6 +2,8 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Tests\Security\Authentication\Provider;
 
+use OpenSky\Bundle\GigyaBundle\Document\User;
+
 use OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken;
 
 use OpenSky\Bundle\GigyaBundle\Security\Authentication\Provider\GigyaProvider;
@@ -41,6 +43,7 @@ class GigyaProviderTest extends GigyaTestCase
     public function testShouldAuthenticateWithAccessTokenAndNoUserProvider()
     {
         $userId      = '123';
+        $user        = new User($userId, 'social');
         $token       = 'test';
         $accessToken = array('access_token' => $token);
 
@@ -49,24 +52,26 @@ class GigyaProviderTest extends GigyaTestCase
             ->will($this->returnValue($accessToken));
 
         $this->socializer->expects($this->once())
-            ->method('getUserId')
+            ->method('getUser')
             ->with($token)
-            ->will($this->returnValue($userId));
+            ->will($this->returnValue($user));
 
         $gigya = $this->provider->authenticate(new GigyaToken());
 
         $this->assertInstanceOf('OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken', $gigya);
-        $this->assertEquals($userId, $gigya->getUser());
+        $this->assertEquals($user, $gigya->getUser());
     }
 
     public function testShouldAuthenticateWithAccessTokenAndUserProvider()
     {
         $userId      = '123';
+        $provider    = 'social';
+        $user        = new User($userId, $provider);
         $token       = 'test';
         $accessToken = array('access_token' => $token);
-        $user        = $this->getMockAccount();
+        $account     = $this->getMockAccount();
 
-        $user->expects($this->once())
+        $account->expects($this->once())
             ->method('getRoles')
             ->will($this->returnValue(array()));
 
@@ -80,27 +85,27 @@ class GigyaProviderTest extends GigyaTestCase
             ->will($this->returnValue($accessToken));
 
         $this->socializer->expects($this->once())
-            ->method('getUserId')
+            ->method('getUser')
             ->with($token)
-            ->will($this->returnValue($userId));
+            ->will($this->returnValue($user));
 
         $provider->expects($this->once())
             ->method('loadUserByUsername')
             ->with($userId)
-            ->will($this->returnValue($user));
+            ->will($this->returnValue($account));
 
         $checker->expects($this->once())
             ->method('checkPreAuth')
-            ->with($user);
+            ->with($account);
 
         $checker->expects($this->once())
             ->method('checkPostAuth')
-            ->with($user);
+            ->with($account);
 
         $gigya = $gigyaProvider->authenticate(new GigyaToken());
 
         $this->assertInstanceOf('OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken', $gigya);
-        $this->assertEquals($user, $gigya->getUser());
+        $this->assertEquals($account, $gigya->getUser());
     }
 
     private function getMockToken()
