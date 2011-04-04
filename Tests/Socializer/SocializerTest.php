@@ -2,10 +2,9 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Tests\Socializer;
 
-use OpenSky\Bundle\GigyaBundle\Document\User;
-
 use Buzz\Message\Request;
 use Buzz\Message\Response;
+use OpenSky\Bundle\GigyaBundle\Security\User\User;
 use OpenSky\Bundle\GigyaBundle\Socializer\Socializer;
 use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 use OpenSky\Bundle\GigyaBundle\Tests\GigyaTestCase;

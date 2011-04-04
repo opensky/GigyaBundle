@@ -4,7 +4,7 @@ namespace OpenSky\Bundle\GigyaBundle\Socializer;
 
 use Buzz\Client\ClientInterface;
 use Buzz\Message\Response;
-use OpenSky\Bundle\GigyaBundle\Document\User;
+use OpenSky\Bundle\GigyaBundle\Security\User\User;
 use OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory;
 use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -180,45 +180,6 @@ class Socializer implements SocializerInterface, UserProviderInterface
 
     public function loadUser(UserInterface $user)
     {
-//        $response = $this->factory->getResponse();
-//        $request  = $this->factory->getUserInfoReloadRequest($user->getUsername());
-//
-//        $this->client->send($request, $response);
-//
-//        libxml_use_internal_errors(true);
-//
-//        $result = simplexml_load_string($response->getContent());
-//
-//        if (!$result) {
-//            var_dump($result); exit('asd');
-//
-//            throw new \Exception('Gigya API returned invalid response');
-//        }
-//
-//        if ((string) $result->errorCode) {
-//            exit((string) $result->errorMessage);
-//            throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorDetails, (string) $result->errorCode);
-//        }
-//
-//        $user = new User((string) $result->UID, (string) $result->loginProvider);
-//
-//        foreach ($result->identities as $identity) {
-//            if ((string) $identity->provider === $user->getProvider()) {
-//                $properties = array(
-//                    'nickname', 'photoUrl', 'thumbnailUrl', 'firstName',
-//                    'lastName', 'gender', 'age', 'email', 'city', 'state',
-//                    'zip', 'profileUrl'
-//                );
-//
-//                foreach ($properties as $property) {
-//                    if (isset($identity->{$property})) {
-//                        $user->{'set'.ucfirst($property)}((string) $identity->{$property});
-//                    }
-//                }
-//            }
-//        }
-//        var_dump($user); exit('asd');
-//
         return $user;
     }
 
@@ -230,7 +191,7 @@ class Socializer implements SocializerInterface, UserProviderInterface
 
     public function supportsClass($class)
     {
-        return $class === 'OpenSky\Bundle\GigyaBundle\Document\User';
+        return $class === 'OpenSky\Bundle\GigyaBundle\Security\User\User';
     }
 
 }

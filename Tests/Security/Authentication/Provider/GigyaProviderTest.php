@@ -2,11 +2,9 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Tests\Security\Authentication\Provider;
 
-use OpenSky\Bundle\GigyaBundle\Document\User;
-
 use OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken;
-
 use OpenSky\Bundle\GigyaBundle\Security\Authentication\Provider\GigyaProvider;
+use OpenSky\Bundle\GigyaBundle\Security\User\User;
 use OpenSky\Bundle\GigyaBundle\Socializer\Socializer;
 use OpenSky\Bundle\GigyaBundle\Tests\GigyaTestCase;
 

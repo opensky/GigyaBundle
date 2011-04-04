@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenSky\Bundle\GigyaBundle\Document;
+namespace OpenSky\Bundle\GigyaBundle\Security\User;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
