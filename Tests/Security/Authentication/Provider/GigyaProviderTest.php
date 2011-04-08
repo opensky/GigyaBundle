@@ -12,25 +12,18 @@ class GigyaProviderTest extends GigyaTestCase
 {
     private $socializer;
     private $provider;
+    private $providerKey = 'secret';
 
     public function setUp()
     {
         $this->socializer = $this->getSocializerMock();
-        $this->provider = new GigyaProvider($this->socializer);
+        $this->provider = new GigyaProvider($this->socializer, $this->providerKey);
     }
 
     public function testShouldSupportGigyaTokenOnly()
     {
-        $this->assertTrue($this->provider->supports(new GigyaToken()));
+        $this->assertTrue($this->provider->supports(new GigyaToken('', '', $this->providerKey)));
         $this->assertFalse($this->provider->supports($this->getMockToken()));
-    }
-
-    /**
-     * @expectedException Symfony\Component\Security\Core\Exception\UnsupportedUserException
-     */
-    public function testShouldNotLoadUserByAccount()
-    {
-        $this->provider->loadUserByAccount($this->getMockAccount());
     }
 
     public function testShouldNotAuthenticateIfUnsuportedToken()
@@ -42,11 +35,13 @@ class GigyaProviderTest extends GigyaTestCase
     {
         $userId      = '123';
         $user        = new User($userId, 'social');
+        $code        = 'secret';
         $token       = 'test';
         $accessToken = array('access_token' => $token);
 
         $this->socializer->expects($this->once())
             ->method('getAccessToken')
+            ->with($code)
             ->will($this->returnValue($accessToken));
 
         $this->socializer->expects($this->once())
@@ -54,16 +49,17 @@ class GigyaProviderTest extends GigyaTestCase
             ->with($token)
             ->will($this->returnValue($user));
 
-        $gigya = $this->provider->authenticate(new GigyaToken());
+        $gigya = $this->provider->authenticate(new GigyaToken('', $code, $this->providerKey));
 
         $this->assertInstanceOf('OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken', $gigya);
-        $this->assertEquals($user, $gigya->getUser());
+        $this->assertSame($user, $gigya->getUser());
     }
 
     public function testShouldAuthenticateWithAccessTokenAndUserProvider()
     {
         $userId      = '123';
         $provider    = 'social';
+        $code        = 'secret';
         $user        = new User($userId, $provider);
         $token       = 'test';
         $accessToken = array('access_token' => $token);
@@ -76,10 +72,11 @@ class GigyaProviderTest extends GigyaTestCase
         $provider = $this->getMockUserProvider();
         $checker  = $this->getMockAccountChecker();
 
-        $gigyaProvider = new GigyaProvider($this->socializer, $provider, $checker);
+        $gigyaProvider = new GigyaProvider($this->socializer, $this->providerKey, $provider, $checker);
 
         $this->socializer->expects($this->once())
             ->method('getAccessToken')
+            ->with($code)
             ->will($this->returnValue($accessToken));
 
         $this->socializer->expects($this->once())
@@ -100,10 +97,10 @@ class GigyaProviderTest extends GigyaTestCase
             ->method('checkPostAuth')
             ->with($account);
 
-        $gigya = $gigyaProvider->authenticate(new GigyaToken());
+        $gigya = $gigyaProvider->authenticate(new GigyaToken('', $code, $this->providerKey));
 
         $this->assertInstanceOf('OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken', $gigya);
-        $this->assertEquals($account, $gigya->getUser());
+        $this->assertSame($account, $gigya->getUser());
     }
 
     private function getMockToken()
