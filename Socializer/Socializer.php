@@ -3,9 +3,7 @@
 namespace OpenSky\Bundle\GigyaBundle\Socializer;
 
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-
 use Buzz\Client\ClientInterface;
 use Buzz\Message\Response;
 use OpenSky\Bundle\GigyaBundle\Security\User\User;
