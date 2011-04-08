@@ -2,6 +2,10 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Socializer;
 
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+
 use Buzz\Client\ClientInterface;
 use Buzz\Message\Response;
 use OpenSky\Bundle\GigyaBundle\Security\User\User;
@@ -105,10 +109,10 @@ class Socializer implements SocializerInterface, UserProviderInterface
     /**
      * @return array|null
      */
-    public function getAccessToken()
+    public function getAccessToken($code)
     {
         $response = $this->factory->getResponse();
-        $request  = $this->factory->getAccessTokenRequest();
+        $request  = $this->factory->getAccessTokenRequest($code);
 
         $this->client->send($request, $response);
 
@@ -142,35 +146,37 @@ class Socializer implements SocializerInterface, UserProviderInterface
 
         $user = new User((string) $result->UID, strtolower((string) $result->loginProvider));
 
-        foreach ($result->identities->children() as $identity) {
-            if ((string) $identity->provider === $user->getProvider()) {
-                $properties = array(
-                    'nickname', 'firstName', 'lastName', 'gender', 'age',
-                    'email', 'city', 'state', 'zip', 'country'
-                );
+        if (isset($result->identities)) {
+            foreach ($result->identities->children() as $identity) {
+                if ((string) $identity->provider === $user->getProvider()) {
+                    $properties = array(
+                        'nickname', 'firstName', 'lastName', 'gender', 'age',
+                        'email', 'city', 'state', 'zip', 'country'
+                    );
 
-                foreach ($properties as $property) {
-                    if (isset($identity->{$property})) {
-                        $user->{'set'.ucfirst($property)}((string) $identity->{$property});
+                    foreach ($properties as $property) {
+                        if (isset($identity->{$property})) {
+                            $user->{'set'.ucfirst($property)}((string) $identity->{$property});
+                        }
                     }
-                }
 
-                $urls = array(
-                    'thumbnailURL' => 'thumbnailUrl',
-                    'profileURL'   => 'profileUrl',
-                    'photoURL'     => 'photoUrl',
-                );
+                    $urls = array(
+                        'thumbnailURL' => 'thumbnailUrl',
+                        'profileURL'   => 'profileUrl',
+                        'photoURL'     => 'photoUrl',
+                    );
 
-                foreach ($urls as $property => $setter) {
-                    if (isset($identity->{$property})) {
-                        $user->{'set'.ucfirst($setter)}((string) $identity->{$property});
+                    foreach ($urls as $property => $setter) {
+                        if (isset($identity->{$property})) {
+                            $user->{'set'.ucfirst($setter)}((string) $identity->{$property});
+                        }
                     }
-                }
 
-                if (isset($identity->{'birthMonth'}) &&
-                    isset($identity->{'birthDay'}) &&
-                    isset($identity->{'birthYear'})) {
-                    $user->setBirthday(\DateTime::createFromFormat('n-j-Y H:i', sprintf('%s-%s-%s 00:00', (string) $identity->{'birthMonth'}, (string) $identity->{'birthDay'}, (string) $identity->{'birthYear'})));
+                    if (isset($identity->{'birthMonth'}) &&
+                        isset($identity->{'birthDay'}) &&
+                        isset($identity->{'birthYear'})) {
+                        $user->setBirthday(\DateTime::createFromFormat('n-j-Y H:i', sprintf('%s-%s-%s 00:00', (string) $identity->{'birthMonth'}, (string) $identity->{'birthDay'}, (string) $identity->{'birthYear'})));
+                    }
                 }
             }
         }
@@ -178,15 +184,41 @@ class Socializer implements SocializerInterface, UserProviderInterface
         return $user;
     }
 
+    public function setUserId($token, $uid, $id)
+    {
+        $response = $this->factory->getResponse();
+        $request  = $this->factory->getSetUIDRequest($token, $uid, $id);
+
+        $this->client->send($request, $response);
+
+
+        libxml_use_internal_errors(true);
+
+        $result = simplexml_load_string($response->getContent());
+
+        if (!$result) {
+            throw new \Exception('Gigya API returned invalid response');
+        }
+
+        if ((string) $result->errorCode) {
+            throw new \Exception($result->errorMessage);
+        }
+
+        return true;
+    }
+
     public function loadUser(UserInterface $user)
     {
+        if (!$user instanceof User) {
+            throw new UnsupportedUserException('Cannot load non-gigya users');
+        }
+
         return $user;
     }
 
     public function loadUserByUsername($username)
     {
-        // TODO Auto-generated method stub
-
+        throw new UsernameNotFoundException('Not implemented');
     }
 
     public function supportsClass($class)

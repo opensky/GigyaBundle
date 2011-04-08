@@ -1,6 +1,10 @@
 <?php
 namespace OpenSky\Bundle\GigyaBundle\Security\Authentication\Provider;
 
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+
 use OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken;
 use OpenSky\Bundle\GigyaBundle\Socializer\SocializerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,17 +18,19 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 class GigyaProvider implements AuthenticationProviderInterface
 {
     private $socializer;
+    private $providerKey;
     private $accessToken;
     private $userProvider;
     private $userChecker;
 
-    public function __construct(SocializerInterface $socializer, UserProviderInterface $userProvider = null, UserCheckerInterface $userChecker = null)
+    public function __construct(SocializerInterface $socializer, $providerKey, UserProviderInterface $userProvider = null, UserCheckerInterface $userChecker = null)
     {
         if (null !== $userProvider && null === $userChecker) {
             throw new \InvalidArgumentException('$accountChecker cannot be null, if $userProvider is not null.');
         }
 
         $this->socializer   = $socializer;
+        $this->providerKey  = $providerKey;
         $this->userProvider = $userProvider;
         $this->userChecker  = $userChecker;
     }
@@ -36,7 +42,7 @@ class GigyaProvider implements AuthenticationProviderInterface
         }
 
         try {
-            $accessToken  = $this->socializer->getAccessToken();
+            $accessToken  = $this->socializer->getAccessToken($token->getCredentials());
 
             if (null !== $accessToken) {
                 $user = $this->socializer->getUser($accessToken['access_token']);
@@ -45,7 +51,6 @@ class GigyaProvider implements AuthenticationProviderInterface
         } catch (AuthenticationException $failed) {
             throw $failed;
         } catch (\Exception $failed) {
-            var_dump($failed->getMessage()); die();
             throw new AuthenticationException('Unknown error', $failed->getMessage(), $failed->getCode(), $failed);
         }
 
@@ -54,34 +59,30 @@ class GigyaProvider implements AuthenticationProviderInterface
 
     public function supports(TokenInterface $token)
     {
-        return $token instanceof GigyaToken;
+        return $token instanceof GigyaToken && $this->providerKey === $token->getProviderKey();
     }
 
     private function createAuthenticatedToken(UserInterface $user)
     {
+        $token = new GigyaToken($user, '', $this->providerKey, $user->getRoles());
+
         if (null === $this->userProvider) {
-            return new GigyaToken($user, $user->getRoles());
+            return $token;
         }
 
-        $user = $this->userProvider->loadUserByUsername($user->getUsername());
+        try {
+            $loaded = $this->userProvider->loadUserByUsername($user->getUsername());
+        } catch (UsernameNotFoundException $e) {
+            return $token;
+        }
 
-        if (! $user instanceof UserInterface) {
+        if (! $loaded instanceof UserInterface) {
             throw new \RuntimeException('User provider did not return an implementation of account interface.');
         }
 
-        $this->userChecker->checkPreAuth($user);
-        $this->userChecker->checkPostAuth($user);
+        $this->userChecker->checkPreAuth($loaded);
+        $this->userChecker->checkPostAuth($loaded);
 
-        return new GigyaToken($user, $user->getRoles());
-    }
-
-    /**
-     * Finds a user by account
-     *
-     * @param AccountInterface $user
-     */
-    public function loadUserByAccount(UserInterface $user)
-    {
-        throw new UnsupportedUserException('Account is not supported.');
+        return new GigyaToken($loaded, $loaded->getPassword(), $this->providerKey, $loaded->getRoles());
     }
 }

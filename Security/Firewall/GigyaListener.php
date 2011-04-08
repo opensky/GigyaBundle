@@ -19,11 +19,11 @@ class GigyaListener extends AbstractAuthenticationListener
     protected function attemptAuthentication(Request $request)
     {
 //        die('asdsa');
-        if (null !== $request->query->get('code')) {
+        $code = $request->query->get('code');
+        if (null !== $code) {
             $this->factory->setRedirectUri($request->getUriForPath($request->getPathInfo()));
-            $this->factory->setCode($request->query->get('code'));
 
-            return $this->authenticationManager->authenticate(new GigyaToken());
+            return $this->authenticationManager->authenticate(new GigyaToken('', $code, $this->providerKey));
         }
     }
 }

@@ -11,19 +11,16 @@ class GigyaFactory extends AbstractFactory
 {
     protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
     {
-        if (isset($config['provider'])) {
-            $authProviderId = 'gigya.auth.'.$id;
+        $authProviderId = 'gigya.auth.'.$id;
 
-            $container
-                ->setDefinition($authProviderId, new DefinitionDecorator('gigya.auth'))
-                ->addArgument(new Reference($userProviderId))
-                ->addArgument(new Reference('security.user_checked'))
-            ;
+        $container
+            ->setDefinition($authProviderId, new DefinitionDecorator('gigya.auth'))
+            ->addArgument($id)
+            ->addArgument(new Reference($userProviderId))
+            ->addArgument(new Reference('security.user_checker'))
+        ;
 
-            return $authProviderId;
-        }
-
-        return 'gigya.auth';
+        return $authProviderId;
     }
 
     protected function getListenerId()

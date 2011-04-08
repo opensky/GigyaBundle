@@ -39,9 +39,13 @@ class MessageFactoryTest extends GigyaTestCase
     public function testGetAccessTokenRequest()
     {
         $request  = new Request(Request::METHOD_POST, '/socialize.getToken?client_id='.$this->apiKey.'&client_secret='.$this->secret, $this->apiHost);
+        $code     = 'asd';
+
+        $this->factory->setCode($code);
 
         $request->setContent(http_build_query(array(
             'grant_type'    => 'authorization_code',
+            'code'          => $code,
         )));
 
         $this->assertEquals($request, $this->factory->getAccessTokenRequest());
