@@ -107,7 +107,7 @@ class Socializer implements SocializerInterface, UserProviderInterface
     /**
      * @return array|null
      */
-    public function getAccessToken($code)
+    public function getAccessToken($code = null)
     {
         $response = $this->factory->getResponse();
         $request  = $this->factory->getAccessTokenRequest($code);

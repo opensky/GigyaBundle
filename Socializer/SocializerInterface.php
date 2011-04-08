@@ -10,6 +10,6 @@ interface SocializerInterface
     function getUserActionByKey($key);
     function addUserActionByKey($userAction, $key);
     function login($provider);
-    function getAccessToken($code);
+    function getAccessToken($code = null);
     function getUser($token);
 }
