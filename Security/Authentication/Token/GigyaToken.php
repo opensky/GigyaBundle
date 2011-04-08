@@ -62,4 +62,11 @@ class GigyaToken extends AbstractToken
         list($this->credentials, $this->providerKey, $parentStr) = unserialize($str);
         parent::unserialize($parentStr);
     }
+
+    public function setUser($user)
+    {
+        parent::setUser($user);
+
+        $this->setAuthenticated(true);
+    }
 }

@@ -18,8 +18,8 @@ class GigyaListener extends AbstractAuthenticationListener
 
     protected function attemptAuthentication(Request $request)
     {
-//        die('asdsa');
         $code = $request->query->get('code');
+
         if (null !== $code) {
             $this->factory->setRedirectUri($request->getUriForPath($request->getPathInfo()));
 
