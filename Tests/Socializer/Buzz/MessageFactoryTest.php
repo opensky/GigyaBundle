@@ -55,9 +55,9 @@ class MessageFactoryTest extends GigyaTestCase
         $request = new Request(Request::METHOD_POST, '/socialize.getUserInfo?'.http_build_query(array(
             'apiKey'      => $this->apiKey,
             'secret'      => $this->secret,
-            'oauth_token' => $token,
             'nonce'       => $token,
             'timestamp'   => time(),
+            'oauth_token' => $token,
         )), $this->apiHost);
 
         $request->setContent(http_build_query(array(
