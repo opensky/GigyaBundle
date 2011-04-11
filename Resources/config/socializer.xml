@@ -46,7 +46,9 @@
             <argument type="service" id="gigya.templating.helper.socializer" />
         </service>
 
-        <service id="gigya.controller" class="%gigya.controller.class%">
+        <service id="gigya.controller" class="%gigya.controller.class%" scope="request">
+            <argument type="service" id="request" />
+            <argument type="service" id="event_dispatcher" />
             <argument type="service" id="gigya.socializer" />
             <argument type="service" id="gigya.api.message_factory" />
             <argument type="service" id="router" />
