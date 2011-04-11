@@ -1,4 +1,9 @@
 gigya_user_oauth_login:
-    pattern:      /user/popup/{provider}
+    pattern:      /gigya/login/{provider}
     defaults:     { _controller: gigya.controller:login }
     requirements: { _method: get, provider: '[\w\d\-]{1,32}' }
+
+gigya_user_oauth_unlink:
+    pattern:      /gigya/unlink/{uid}
+    defaults:     { _controller: gigya.controller:unlink }
+    requirements: { _method: delete }
