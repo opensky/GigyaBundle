@@ -31,10 +31,10 @@ class Socializer implements SocializerInterface, UserProviderInterface
 
     public function __construct($apiKey, array $providers = array(), ClientInterface $client, MessageFactory $factory)
     {
-        $this->apiKey  = (string) $apiKey;
+        $this->apiKey    = (string) $apiKey;
         $this->providers = $providers;
-        $this->client  = $client;
-        $this->factory = $factory;
+        $this->client    = $client;
+        $this->factory   = $factory;
     }
 
     /**
@@ -123,10 +123,10 @@ class Socializer implements SocializerInterface, UserProviderInterface
         return $result;
     }
 
-    public function getUser($token)
+    public function getUserInfo($token, $uid = null)
     {
         $response = $this->factory->getResponse();
-        $request  = $this->factory->getUserInfoRequest($token);
+        $request  = $this->factory->getUserInfoRequest($token, $uid);
 
         $this->client->send($request, $response);
 
@@ -141,6 +141,13 @@ class Socializer implements SocializerInterface, UserProviderInterface
         if ((string) $result->errorCode) {
             throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorDetails, (string) $result->errorCode);
         }
+
+        return $result;
+    }
+
+    public function getUser($token)
+    {
+        $result = $this->getUserInfo($token);
 
         $user = new User((string) $result->UID, strtolower((string) $result->loginProvider));
 
@@ -189,6 +196,71 @@ class Socializer implements SocializerInterface, UserProviderInterface
 
         $this->client->send($request, $response);
 
+        libxml_use_internal_errors(true);
+
+        $result = simplexml_load_string($response->getContent());
+
+        if (!$result) {
+            throw new \Exception('Gigya API returned invalid response');
+        }
+
+        if ((string) $result->errorCode) {
+            throw new \Exception($result->errorMessage);
+        }
+
+        return true;
+    }
+
+    public function removeConnection($token, $uid, $provider = null)
+    {
+        $response = $this->factory->getResponse();
+        $request  = $this->factory->getRemoveConnectionRequest($token, $uid, $provider);
+
+        $this->client->send($request, $response);
+
+        libxml_use_internal_errors(true);
+
+        $result = simplexml_load_string($response->getContent());
+
+        if (!$result) {
+            throw new \Exception('Gigya API returned invalid response');
+        }
+
+        if ((string) $result->errorCode) {
+            throw new \Exception($result->errorMessage);
+        }
+
+        return true;
+    }
+
+    public function notifyRegistration($token, $uid, $id, $message = null)
+    {
+        $response = $this->factory->getResponse();
+        $request  = $this->factory->getNotifyRegistrationRequest($token, $uid, $id, $message);
+
+        $this->client->send($request, $response);
+
+        libxml_use_internal_errors(true);
+
+        $result = simplexml_load_string($response->getContent());
+
+        if (!$result) {
+            throw new \Exception('Gigya API returned invalid response');
+        }
+
+        if ((string) $result->errorCode) {
+            throw new \Exception($result->errorMessage);
+        }
+
+        return true;
+    }
+
+    public function notifyLogin($token, $id, $message = null)
+    {
+        $response = $this->factory->getResponse();
+        $request  = $this->factory->getNotifyLoginRequest($token, $id, $message);
+
+        $this->client->send($request, $response);
 
         libxml_use_internal_errors(true);
 

@@ -59,15 +59,22 @@ class MessageFactory
         return $request;
     }
 
-    public function getUserInfoRequest($token)
+    public function getUserInfoRequest($token, $uid = null)
     {
-        $request = new Request(Request::METHOD_POST, '/socialize.getUserInfo?'.http_build_query(array(
+        $query = array(
             'apiKey'      => $this->key,
             'secret'      => $this->secret,
-            'oauth_token' => $token,
             'nonce'       => $token,
             'timestamp'   => time(),
-        )), $this->host);
+        );
+
+        if (null !== $uid) {
+            $query['uid'] = $uid;
+        } else {
+            $query['oauth_token'] = $token;
+        }
+
+        $request = new Request(Request::METHOD_POST, '/socialize.getUserInfo?'.http_build_query($query), $this->host);
 
         $request->setContent(http_build_query(array(
             'format' => 'xml',
@@ -94,16 +101,76 @@ class MessageFactory
         return $request;
     }
 
-    public function getUserInfoReloadRequest($uid)
+    public function getNotifyRegistrationRequest($token, $uid, $id, $message = null)
     {
-        $request = new Request(Request::METHOD_POST, '/socialize.getUserInfo?apiKey='.$this->key.'&secret='.$this->secret.'&uid='.$uid, $this->host);
+        $request = new Request(Request::METHOD_POST, '/socialize.notifyRegistration?'.http_build_query(array(
+            'uid'       => $uid,
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->host);
 
-        $request->setContent(http_build_query(array(
-            'format' => 'xml',
-        )));
+        $data = array(
+            'siteUID' => $id,
+            'format'  => 'xml',
+        );
+
+        if (null !== $message) {
+            $data['cid'] = $message;
+        }
+
+        $request->setContent(http_build_query($data));
 
         return $request;
     }
+
+    public function getNotifyLoginRequest($token, $id, $message = null)
+    {
+        $request = new Request(Request::METHOD_POST, '/socialize.notifyRegistration?'.http_build_query(array(
+            'uid'       => $id,
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->host);
+
+        $data = array(
+            'siteUID' => $id,
+        );
+
+        if (null !== $message) {
+            $data['cid'] = $message;
+        }
+
+        $request->setContent(http_build_query($data));
+
+        return $request;
+    }
+
+    public function getRemoveConnectionRequest($token, $uid, $provider = null)
+    {
+        $request = new Request(Request::METHOD_POST, '/socialize.disconnect?'.http_build_query(array(
+            'uid'       => $uid,
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->host);
+
+        $data = array(
+            'format'  => 'xml',
+        );
+
+        if (null !== $provider) {
+            $data['provider'] = $provider;
+        }
+
+        $request->setContent(http_build_query($data));
+
+        return $request;
+    }
+
     public function getResponse()
     {
         return new Response();
