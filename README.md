@@ -65,14 +65,37 @@ the application's `config.yml` file:
 
     $socializer->addUserActionByKey($userAction, 'my_test_key');
 
-#### View
+#### View Share Bar UI
 
 Include the Gigya source template in the `head` tag of your layout or directly before the closing `</body>` tag (this implementation supports lazy loading).
+
+    {% include "GigyaBundle:Socializer:_source.html.twig" %}
 
 With twig:
 
     <div>
-        {% include "GigyaBundle:Socializer:share.html.twig" with {
+        {% include "GigyaBundle:Socializer:_share_bar.html.twig" with {
+            'userActionKey' : 'my_test_key',
+            'shareButtons' : 'share,facebook,twitter,email',
+            'containerID' : 'containerShare'
+        }
+        %}
+        <div id="containerShare"></div>
+        <script>
+            {{ gigya_socializer.getShareBarFunctionName('my_test_key') }}();
+        </script>
+    </div>
+
+#### View Share UI
+
+Include the Gigya source template in the `head` tag of your layout or directly before the closing `</body>` tag (this implementation supports lazy loading).
+
+    {% include "GigyaBundle:Socializer:_source.html.twig" %}
+
+With twig:
+
+    <div>
+        {% include "GigyaBundle:Socializer:_share.html.twig" with {
             'userActionKey' : 'my_test_key',
             'enabledProviders' : 'facebook,twitter,yahoo,messenger,google,linkedin',
             'operationMode' : 'multiSelect',

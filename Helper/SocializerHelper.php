@@ -67,6 +67,15 @@ class SocializerHelper extends Helper
 
     /**
      * @param string $key
+     * @return string $shareBarFunctionName
+     */
+    public function getShareBarFunctionName($key)
+    {
+        return $this->namespace.".showShareBarUI_".$key;
+    }
+
+    /**
+     * @param string $key
      * @return AntiMattr\GigyaBundle\Socializer\UserAction $userAction
      */
     public function getUserActionByKey($key)

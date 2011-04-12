@@ -1,0 +1,79 @@
+{#
+ # @param string userActionKey
+ # @param string shareButtons
+ # @param string containerID
+ #}
+
+{% set apiKey = gigya_socializer.apiKey %}
+{% set namespace = gigya_socializer.namespace %}
+{% set userAction = gigya_socializer.getUserActionByKey(userActionKey) %}
+{% set shareBarFunctionName = gigya_socializer.getShareBarFunctionName(userActionKey) %}
+
+<script type="text/javascript">
+{% if namespace != 'window' %}
+if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ namespace }} = window.{{ namespace }} = {}; }
+{% endif %}
+
+{{ shareBarFunctionName }} = function() {
+    if (typeof gigya != 'undefined') {
+        if (typeof console != 'undefined') console.log('Gigya already instantiated');
+
+        var conf = {
+            APIKey: '{{ apiKey }}'
+        };
+
+        var userAction = new gigya.services.socialize.UserAction();
+
+        {% if userAction.userMessage %}
+            userAction.setUserMessage('{{ userAction.userMessage | escape('js') }}');
+        {% endif %}
+
+        {% if userAction.title %}
+            // Setting the title and description
+            // (will be presented in the preview on the Share UI)
+            userAction.setTitle('{{ userAction.title | escape('js') }}');
+        {% endif %}
+
+        {% if userAction.description %}
+            userAction.setDescription('{{ userAction.description | escape('js') }}');
+        {% endif %}
+
+        {% if userAction.linkBack %}
+            // Setting a link back to the publishing source
+            userAction.setLinkBack('{{ userAction.linkBack | raw }}');
+        {% endif %}
+
+        {% if userAction.hasActionLinks() %}
+            {% for actionLink in userAction.actionLinks %}
+                // Adding Action Link
+                userAction.addActionLink('{{ actionLink.title | escape('js') }}', '{{ actionLink.destination | raw }}');
+            {% endfor %}
+        {% endif %}
+
+        {% if userAction.hasMediaItems() %}
+            {% for mediaItem in userAction.mediaItems %}
+                // Adding a video (will be presented in the preview on the Share UI)
+                userAction.addMediaItem({{ mediaItem.toJson | raw }});
+            {% endfor %}
+        {% endif %}
+
+        // Parameters for the showShareUI method, including the UserAction object
+        var params = {
+            userAction: userAction // The UserAction object enfolding the newsfeed data.	
+            {% if shareButtons %}
+            ,shareButtons: '{{ shareButtons }}'
+            {% endif %}
+            ,containerID: '{{ containerID }}'
+            ,cid: '{{ userActionKey }}'
+        };
+	
+        // Show the "Share" dialog
+        gigya.services.socialize.showShareBarUI(conf, params);
+    } else {
+        if (typeof console != 'undefined') console.log("Gigya:\n-- typeof gigya == "+typeof gigya+"\n-- Reattempting instantiation in 100 milliseconds");
+        setTimeout(function(){
+            {{ shareBarFunctionName }}();
+        },100);
+    }
+}
+</script>
