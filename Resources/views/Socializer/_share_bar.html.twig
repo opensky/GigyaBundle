@@ -2,6 +2,7 @@
  # @param string userActionKey
  # @param string shareButtons
  # @param string containerID
+ # @param string userMessage [optional]
  #}
 
 {% set apiKey = gigya_socializer.apiKey %}
@@ -24,18 +25,16 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
         var userAction = new gigya.services.socialize.UserAction();
 
-        {% if userAction.userMessage %}
-            userAction.setUserMessage('{{ userAction.userMessage | escape('js') }}');
+        {% if userMessage %}
+            userAction.setUserMessage('{{ userMessage | raw }}');
+        {% elseif userAction.userMessage %}
+            userAction.setUserMessage('{{ userAction.userMessage | raw }}');
         {% endif %}
 
         {% if userAction.title %}
             // Setting the title and description
             // (will be presented in the preview on the Share UI)
             userAction.setTitle('{{ userAction.title | escape('js') }}');
-        {% endif %}
-
-        {% if userAction.description %}
-            userAction.setDescription('{{ userAction.description | escape('js') }}');
         {% endif %}
 
         {% if userAction.linkBack %}

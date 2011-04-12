@@ -6,6 +6,7 @@
  # @param string onError
  # @param string onSendDone
  # @param string context
+ # @param string userMessage [optional]
  # @param boolean showMoreButton
  # @param boolean showEmailButton
  #}
@@ -34,7 +35,9 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
 
         var userAction = new gigya.services.socialize.UserAction();
 
-        {% if userAction.userMessage %}
+        {% if userMessage %}
+            userAction.setUserMessage('{{ userMessage | escape('js') }}');
+        {% elseif userAction.userMessage %}
             userAction.setUserMessage('{{ userAction.userMessage | escape('js') }}');
         {% endif %}
 
