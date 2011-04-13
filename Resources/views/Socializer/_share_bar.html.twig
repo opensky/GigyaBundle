@@ -2,6 +2,7 @@
  # @param string userActionKey
  # @param string shareButtons
  # @param string containerID
+ # @param boolean facebookLikeButton
  # @param string userMessage [optional]
  #}
 
@@ -64,6 +65,20 @@ if ({{ namespace }} == null || typeof({{ namespace }}) != 'object') { var {{ nam
             {% endif %}
             ,containerID: '{{ containerID }}'
             ,cid: '{{ userActionKey }}'
+            {% if facebookLikeButton %}
+            ,facebookLikeButton: {
+                {% if facebookLikeButtonPosition %}
+			    position: '{{ facebookLikeButtonPosition }}'
+                {% else %}
+                position: 'first'
+                {% endif %}
+                {% if facebookLikeButtonAction %}
+                ,action: '{{ facebookLikeButtonAction }}'
+                {% else %}
+                ,action: 'Like'
+                {% endif %}
+            }
+            {% endif %}
         };
 	
         // Show the "Share" dialog
