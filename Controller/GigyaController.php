@@ -63,6 +63,10 @@ class GigyaController
 
     public function login($provider)
     {
+        if (null !== ($redirect = $this->request->get('redirect'))) {
+            $this->request->getSession()->set('_security.target_path', $redirect);
+        }
+
         $this->messages->setRedirectUri($this->router->generate($this->route, array(), true));
 
         $message = $this->socializer->login($provider);
