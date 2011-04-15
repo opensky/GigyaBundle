@@ -63,6 +63,12 @@
             <call method="setMessageFactory">
                 <argument type="service" id="gigya.api.message_factory" />
             </call>
+            <call method="setRouter">
+                <argument type="service" id="router" />
+            </call>
+            <call method="setRoute">
+                <argument>%gigya.socializer.redirect_route%</argument>
+            </call>
         </service>
     </services>
 
