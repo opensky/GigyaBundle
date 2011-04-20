@@ -2,6 +2,8 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Controller;
 
+use OpenSky\Bundle\GigyaBundle\Events;
+use OpenSky\Bundle\GigyaBundle\Event\GigyaEvent;
 use OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory;
 use OpenSky\Bundle\GigyaBundle\Socializer\Socializer;
 use Symfony\Component\EventDispatcher\Event;
@@ -79,10 +81,7 @@ class GigyaController
         $provider = $this->request->request->get('provider');
         $this->socializer->removeConnection($this->socializer->getAccessToken(), $uid, $provider);
 
-        $this->dispatcher->notify(new Event($this, 'gigya.unlinked', array(
-            'provider' => $provider,
-            'uid'      => $uid
-        )));
+        $this->dispatcher->dispatch(Events::onGigyaUnlink, new ProviderEvent($provider, $uid));
 
         if (null !== ($redirect = $this->request->get('redirect'))) {
             return new RedirectResponse($redirect);
