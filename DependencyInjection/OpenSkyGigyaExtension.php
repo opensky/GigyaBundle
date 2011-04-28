@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class GigyaExtension extends Extension
+class OpenSkyGigyaExtension extends Extension
 {
     /**
      * @see Symfony\Component\DependencyInjection\Extension.ExtensionInterface::load()
@@ -58,6 +58,6 @@ class GigyaExtension extends Extension
      */
     public function getAlias()
     {
-        return 'gigya';
+        return 'opensky_gigya';
     }
 }

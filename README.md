@@ -29,7 +29,7 @@ Add GoogleBundle to the `registerBundles()` method of your application kernel:
 Enable loading of the Share service by adding the following to
 the application's `config.yml` file:
 
-    gigya:
+    opensky_gigya:
         socializer:
             api_key: xxxxxx
             namespace: MyJavaScriptCompatibleVariableNameWithNoSpaces
