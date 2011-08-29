@@ -277,7 +277,7 @@ class Socializer implements SocializerInterface, UserProviderInterface
         return true;
     }
 
-    public function loadUser(UserInterface $user)
+    public function refreshUser(UserInterface $user)
     {
         if (!$user instanceof User) {
             throw new UnsupportedUserException('Cannot load non-gigya users');
