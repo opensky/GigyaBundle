@@ -19,7 +19,7 @@
 
     <php>
         <!-- <server name="SYMFONY_SRC" value="/path/to/symfony/src" /> -->
-        <!-- <server name="SYMFONY_LIB" value="/path/to/buzz/lib" /> -->
+        <!-- <server name="BUZZ_LIB" value="/path/to/buzz/lib" /> -->
     </php>
 
     <filter>
