@@ -171,6 +171,16 @@ class MessageFactory
         return $request;
     }
 
+    public function getSessionInfoRequest($uid, $provider)
+    {
+        return new Request(Request::METHOD_GET, '/socialize.getSessionInfo?'.http_build_query(array(
+            'provider' => $provider,
+            'uid'      => $uid,
+            'apiKey'   => $this->key,
+            'secret'   => $this->secret,
+        )), $this->host);
+    }
+
     public function getResponse()
     {
         return new Response();
