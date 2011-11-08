@@ -12,4 +12,5 @@ interface SocializerInterface
     function login($provider);
     function getAccessToken($code = null);
     function getUser($token);
+    function getSessionInfo($uid, $provider);
 }
