@@ -127,7 +127,7 @@ class MessageFactory
 
     public function getNotifyLoginRequest($token, $id, $message = null)
     {
-        $request = new Request(Request::METHOD_POST, '/socialize.notifyRegistration?'.http_build_query(array(
+        $request = new Request(Request::METHOD_POST, '/socialize.notifyLogin?'.http_build_query(array(
             'uid'       => $id,
             'apiKey'    => $this->key,
             'secret'    => $this->secret,
