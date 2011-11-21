@@ -48,7 +48,6 @@ class MessageFactory
         $request = new Request(Request::METHOD_POST, '/socialize.getToken?client_id='.$this->key.'&client_secret='.$this->secret, $this->host);
 
         if (null !== $code) {
-
             $data = array(
                 'grant_type'   => 'authorization_code',
                 'code'         => $code,
@@ -57,7 +56,6 @@ class MessageFactory
                 $data['redirect_uri'] = $this->redirectUri;
             }
             $request->setContent(http_build_query($data));
-
         } else {
             $request->setContent(http_build_query(array(
                 'grant_type'   => 'none',
