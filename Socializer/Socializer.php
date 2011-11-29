@@ -274,7 +274,7 @@ class Socializer implements SocializerInterface, UserProviderInterface
             throw new \Exception($result->errorMessage);
         }
 
-        return true;
+        return $result;
     }
 
     public function getSessionInfo($uid, $provider)
