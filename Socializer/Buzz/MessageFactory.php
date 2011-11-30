@@ -26,6 +26,30 @@ class MessageFactory
         $this->redirectUri = $redirectUri;
     }
 
+    public function getDeleteAccountRequest($token, $id, $message = null)
+    {
+        $request = new Request(Request::METHOD_POST, '/socialize.deleteAccount?'.http_build_query(array(
+            'uid'       => $id,
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->host);
+
+        $data = array(
+            'uid' => $id,
+        );
+
+        if (null !== $message) {
+            $data['cid'] = $message;
+        }
+
+        $request->setContent(http_build_query($data));
+
+        return $request;
+    }
+
+
     public function getLoginRequest($provider)
     {
         $request = new Request(Request::METHOD_POST, '/socialize.login', $this->host);
