@@ -299,6 +299,38 @@ class Socializer implements SocializerInterface, UserProviderInterface
         return $result;
     }
 
+    /**
+     * Removes the user account at gigya's
+     *
+     * @param   string  $token
+     * @param   string  $id
+     * @param   string  $message
+     *
+     * @return  \SimpleXMLElement   The response
+     * @throws  \Exception  If invalid response or error
+     */
+    public function deleteAccount($token, $id, $message = null)
+    {
+        $response = $this->factory->getResponse();
+        $request  = $this->factory->getDeleteAccountRequest($token, $id, $message);
+
+        $this->client->send($request, $response);
+
+        libxml_use_internal_errors(true);
+
+        $result = simplexml_load_string($response->getContent());
+
+        if (!$result) {
+            throw new \Exception('Gigya API returned invalid response');
+        }
+
+        if ((string) $result->errorCode) {
+            throw new \Exception($result->errorMessage);
+        }
+
+        return $result;
+    }
+
     public function refreshUser(UserInterface $user)
     {
         if (!$user instanceof User) {
