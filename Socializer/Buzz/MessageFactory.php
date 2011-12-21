@@ -157,7 +157,7 @@ class MessageFactory
         return $request;
     }
 
-    public function getNotifyLoginRequest($token, $id, $newUser = false, $message = null)
+    public function getNotifyLoginRequest($token, $id, $newUser = false, $message = null, $userInfo = null)
     {
         $request = new Request(Request::METHOD_POST, '/socialize.notifyLogin?'.http_build_query(array(
             'apiKey'    => $this->key,
@@ -173,6 +173,10 @@ class MessageFactory
 
         if (null !== $message) {
             $data['cid'] = $message;
+        }
+
+        if (null !== $userInfo) {
+            $data['userInfo'] = json_encode($userInfo);
         }
 
         $request->setContent(http_build_query($data));
