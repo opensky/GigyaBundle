@@ -255,10 +255,10 @@ class Socializer implements SocializerInterface, UserProviderInterface
         return true;
     }
 
-    public function notifyLogin($token, $id, $newUser = false, $message = null)
+    public function notifyLogin($token, $id, $newUser = false, $message = null, $userInfo = null)
     {
         $response = $this->factory->getResponse();
-        $request  = $this->factory->getNotifyLoginRequest($token, $id, $newUser, $message);
+        $request  = $this->factory->getNotifyLoginRequest($token, $id, $newUser, $message, $userInfo);
 
         $this->client->send($request, $response);
 
