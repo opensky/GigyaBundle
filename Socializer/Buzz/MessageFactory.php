@@ -11,16 +11,18 @@ class MessageFactory
     private $key;
     private $host;
     private $gmhost;
+    private $gmreportshost;
     private $secret;
     private $redirectUri;
     private $code;
 
-    public function __construct($key, $secret, $host, $gmhost)
+    public function __construct($key, $secret, $host, $gmhost, $gmreportshost)
     {
-        $this->key      = $key;
-        $this->secret   = $secret;
-        $this->host     = $host;
-        $this->gmhost   = $gmhost;
+        $this->key              = $key;
+        $this->secret           = $secret;
+        $this->host             = $host;
+        $this->gmhost           = $gmhost;
+        $this->gmreportshost    = $gmreportshost;
     }
 
     public function setRedirectUri($redirectUri)
@@ -247,6 +249,29 @@ class MessageFactory
 
         if (null !== $exclude) {
             $data['excludeChallenges'] = $exclude;
+        }
+
+        $request->setContent(http_build_query($data));
+
+        return $request;
+    }
+
+    public function getGMuserReportRequest($token, $startDate, $endDate, $limit = null)
+    {
+        $request = new Request(Request::METHOD_POST, '/reports.getGMUserStats?'.http_build_query(array(
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->gmreportshost);
+
+        $data = array(
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        );
+
+        if (null !== $limit) {
+            $data['limit'] = $limit;
         }
 
         $request->setContent(http_build_query($data));

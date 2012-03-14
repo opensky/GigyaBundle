@@ -350,10 +350,32 @@ class Socializer implements SocializerInterface, UserProviderInterface
         return $class === 'OpenSky\Bundle\GigyaBundle\Security\User\User';
     }
 
-    public function getGMchallengeStatus($token, $id, $details, $include, $exclude)
+    public function getGMchallengeStatus($token, $id, $details = null, $include = null, $exclude = null)
     {
         $response = $this->factory->getResponse();
         $request  = $this->factory->getGMchallengeStatusRequest($token, $id, $details, $include, $exclude);
+
+        $this->client->send($request, $response);
+
+        libxml_use_internal_errors(true);
+
+        $result = json_decode($response->getContent());
+
+        if (!$result) {
+            throw new \Exception('Gigya API returned invalid response');
+        }
+
+        if ((string) $result->errorCode) {
+            throw new \Exception($result->errorMessage);
+        }
+
+        return $result;
+    }
+
+    public function getGMuserReport($token, $startDate, $endDate, $limit = null)
+    {
+        $response = $this->factory->getResponse();
+        $request  = $this->factory->getGMuserReportRequest($token, $startDate, $endDate, $limit);
 
         $this->client->send($request, $response);
 
