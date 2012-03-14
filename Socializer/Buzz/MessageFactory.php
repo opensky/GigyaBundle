@@ -10,15 +10,17 @@ class MessageFactory
 {
     private $key;
     private $host;
+    private $gmhost;
     private $secret;
     private $redirectUri;
     private $code;
 
-    public function __construct($key, $secret, $host)
+    public function __construct($key, $secret, $host, $gmhost)
     {
         $this->key      = $key;
         $this->secret   = $secret;
         $this->host     = $host;
+        $this->gmhost   = $gmhost;
     }
 
     public function setRedirectUri($redirectUri)
@@ -220,5 +222,35 @@ class MessageFactory
     public function getResponse()
     {
         return new Response();
+    }
+
+    public function getGMchallengeStatusRequest($token, $uid, $details = null, $include = null, $exclude = null)
+    {
+        $request = new Request(Request::METHOD_POST, '/gm.getChallengeStatus?'.http_build_query(array(
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->gmhost);
+
+        $data = array(
+            'uid'   => $uid,
+        );
+
+        if (null != $details) {
+            $data['details'] = 'full';
+        }
+
+        if (null !== $include) {
+            $data['includeChallenges'] = $include;
+        }
+
+        if (null !== $exclude) {
+            $data['excludeChallenges'] = $exclude;
+        }
+
+        $request->setContent(http_build_query($data));
+
+        return $request;
     }
 }
