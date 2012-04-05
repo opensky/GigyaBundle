@@ -1,0 +1,16 @@
+{
+    "name": "ktreutlein/gigya-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony2 Gigya Bundle",
+    "keywords": ["share plugin", "facebook", "twitter", "opensky"],
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/framework-bundle": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Symfony\\Bundle\\GigyaBundle": ""
+        }
+    },
+    "target-dir" : "Symfony/Bundle/GigyaBundle"
+}
