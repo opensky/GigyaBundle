@@ -12,5 +12,5 @@
             "Symfony\\Bundle\\GigyaBundle": ""
         }
     },
-    "target-dir" : "Symfony/Bundle/GigyaBundle"
+    "target-dir" : "OpenSky/Bundle/GigyaBundle"
 }
