@@ -5,7 +5,8 @@
     "keywords": ["share plugin", "facebook", "twitter", "opensky"],
     "require": {
         "php": ">=5.3.2",
-        "symfony/framework-bundle": "*"
+        "symfony/framework-bundle": "*",
+        "sensio/buzz-bundle": "*" 
     },
     "autoload": {
         "psr-0": {
