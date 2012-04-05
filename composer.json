@@ -9,7 +9,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Symfony\\Bundle\\GigyaBundle": ""
+            "OpenSky\\Bundle\\GigyaBundle": ""
         }
     },
     "target-dir" : "OpenSky/Bundle/GigyaBundle"
