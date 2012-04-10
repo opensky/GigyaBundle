@@ -150,7 +150,7 @@ class MessageFactory
 
     public function getRemoveConnectionRequest($token, $uid, $provider = null)
     {
-        $request = new Request(Request::METHOD_POST, '/socialize.disconnect?'.http_build_query(array(
+        $request = new Request(Request::METHOD_POST, '/socialize.removeConnection?'.http_build_query(array(
             'uid'       => $uid,
             'apiKey'    => $this->key,
             'secret'    => $this->secret,
