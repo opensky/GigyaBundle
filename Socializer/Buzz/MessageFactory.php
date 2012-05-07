@@ -253,4 +253,22 @@ class MessageFactory
 
         return $request;
     }
+    public function getNotifyActionRequest($token, $uid, $action)
+    {
+        $request = new Request(Request::METHOD_POST, '/gm.notifyAction?'.http_build_query(array(
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->gmhost);
+
+        $data = array(
+            'uid'   => $uid,
+            'action'   => $action,
+        );
+
+        $request->setContent(http_build_query($data));
+
+        return $request;
+    }
 }
