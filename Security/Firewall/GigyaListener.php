@@ -52,12 +52,14 @@ class GigyaListener extends AbstractAuthenticationListener
 
     protected function attemptAuthentication(Request $request)
     {
-        $code = $request->query->get('code');
+        $user = json_decode($request->request->get('user_object'));
 
-        if (null !== $code) {
-            $this->factory->setRedirectUri($this->router->generate($this->route, array(), true));
+        if (null !== $user) {
+            if ($this->route) {
+                $this->factory->setRedirectUri($this->router->generate($this->route, array(), true));
+            }
 
-            return $this->authenticationManager->authenticate(new GigyaToken('', $code, $this->providerKey));
+            return $this->authenticationManager->authenticate(new GigyaToken('', $user->UID, $this->providerKey));
         }
     }
 }
