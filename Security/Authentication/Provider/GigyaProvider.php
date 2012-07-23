@@ -45,6 +45,7 @@ class GigyaProvider implements AuthenticationProviderInterface
             $accessToken  = $this->socializer->getAccessToken();
             if (null !== $accessToken) {
                 $user = $this->socializer->getUser($accessToken['access_token'], $token->getCredentials());
+
                 return $this->createAuthenticatedToken($user);
             }
         } catch (AuthenticationException $failed) {
@@ -67,6 +68,7 @@ class GigyaProvider implements AuthenticationProviderInterface
         if (null === $this->userProvider) {
             return $token;
         }
+
         try {
             $loaded = $this->userProvider->loadUserByUsername($user->getUsername());
         } catch (UsernameNotFoundException $e) {
