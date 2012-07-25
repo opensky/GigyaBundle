@@ -11,6 +11,7 @@
         <parameter key="gigya.api.client.class">Buzz\Client\FileGetContents</parameter>
         <parameter key="gigya.api.message_factory.class">OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory</parameter>
         <parameter key="gigya.api.host">https://socialize.gigya.com</parameter>
+        <parameter key="gigya.api.gmhost">https://gm.gigya.com</parameter>
         <parameter key="gigya.controller.class">OpenSky\Bundle\GigyaBundle\Controller\GigyaController</parameter>
         <parameter key="gigya.templating.helper.socializer.class">OpenSky\Bundle\GigyaBundle\Helper\SocializerHelper</parameter>
         <parameter key="gigya.twig.extension.socializer.class">OpenSky\Bundle\GigyaBundle\Extension\SocializerExtension</parameter>
@@ -33,6 +34,7 @@
             <argument>%gigya.socializer.api_key%</argument>
             <argument>%gigya.socializer.secret%</argument>
             <argument>%gigya.api.host%</argument>
+            <argument>%gigya.api.gmhost%</argument>
         </service>
 
         <service id="gigya.templating.helper.socializer" class="%gigya.templating.helper.socializer.class%">

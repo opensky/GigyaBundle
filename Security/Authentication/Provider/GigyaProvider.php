@@ -5,6 +5,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
+use Symfony\Component\HttpFoundation\Request;
 use OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken;
 use OpenSky\Bundle\GigyaBundle\Socializer\SocializerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -40,12 +41,11 @@ class GigyaProvider implements AuthenticationProviderInterface
         if (!$this->supports($token)) {
             return null;
         }
-
         try {
-            $accessToken  = $this->socializer->getAccessToken($token->getCredentials());
-
+            $accessToken  = $this->socializer->getAccessToken();
             if (null !== $accessToken) {
-                $user = $this->socializer->getUser($accessToken['access_token']);
+                $user = $this->socializer->getUser($accessToken['access_token'], $token->getCredentials());
+
                 return $this->createAuthenticatedToken($user);
             }
         } catch (AuthenticationException $failed) {
@@ -60,12 +60,11 @@ class GigyaProvider implements AuthenticationProviderInterface
     public function supports(TokenInterface $token)
     {
         return $token instanceof GigyaToken && $this->providerKey === $token->getProviderKey();
-    }
+    } 
 
     private function createAuthenticatedToken(UserInterface $user)
     {
         $token = new GigyaToken($user, '', $this->providerKey, $user->getRoles());
-
         if (null === $this->userProvider) {
             return $token;
         }

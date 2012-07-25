@@ -10,15 +10,17 @@ class MessageFactory
 {
     private $key;
     private $host;
+    private $gmhost;
     private $secret;
     private $redirectUri;
     private $code;
 
-    public function __construct($key, $secret, $host)
+    public function __construct($key, $secret, $host, $gmhost)
     {
-        $this->key      = $key;
-        $this->secret   = $secret;
-        $this->host     = $host;
+        $this->key              = $key;
+        $this->secret           = $secret;
+        $this->host             = $host;
+        $this->gmhost           = $gmhost;
     }
 
     public function setRedirectUri($redirectUri)
@@ -26,16 +28,43 @@ class MessageFactory
         $this->redirectUri = $redirectUri;
     }
 
+    public function getDeleteAccountRequest($token, $id, $message = null)
+    {
+        $request = new Request(Request::METHOD_POST, '/socialize.deleteAccount?'.http_build_query(array(
+            'uid'       => $id,
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->host);
+
+        $data = array(
+            'uid' => $id,
+        );
+
+        if (null !== $message) {
+            $data['cid'] = $message;
+        }
+
+        $request->setContent(http_build_query($data));
+
+        return $request;
+    }
+
+
     public function getLoginRequest($provider)
     {
         $request = new Request(Request::METHOD_POST, '/socialize.login', $this->host);
 
-        $request->setContent(http_build_query(array(
+        $data = array(
             'x_provider'    => $provider,
             'client_id'     => $this->key,
-            'redirect_uri'  => $this->redirectUri,
             'response_type' => 'code'
-        )));
+        );
+        if ($this->redirectUri) {
+            $data['redirect_uri'] = $this->redirectUri;
+        }
+        $request->setContent(http_build_query($data));
 
         return $request;
     }
@@ -45,11 +74,16 @@ class MessageFactory
         $request = new Request(Request::METHOD_POST, '/socialize.getToken?client_id='.$this->key.'&client_secret='.$this->secret, $this->host);
 
         if (null !== $code) {
-            $request->setContent(http_build_query(array(
+
+            $data = array(
                 'grant_type'   => 'authorization_code',
                 'code'         => $code,
-                'redirect_uri' => $this->redirectUri,
-            )));
+            );
+            if ($this->redirectUri) {
+                $data['redirect_uri'] = $this->redirectUri;
+            }
+            $request->setContent(http_build_query($data));
+
         } else {
             $request->setContent(http_build_query(array(
                 'grant_type'   => 'none',
@@ -125,10 +159,9 @@ class MessageFactory
         return $request;
     }
 
-    public function getNotifyLoginRequest($token, $id, $message = null)
+    public function getNotifyLoginRequest($token, $id, $newUser = false, $message = null, $userInfo = null)
     {
-        $request = new Request(Request::METHOD_POST, '/socialize.notifyRegistration?'.http_build_query(array(
-            'uid'       => $id,
+        $request = new Request(Request::METHOD_POST, '/socialize.notifyLogin?'.http_build_query(array(
             'apiKey'    => $this->key,
             'secret'    => $this->secret,
             'nonce'     => $token,
@@ -137,10 +170,15 @@ class MessageFactory
 
         $data = array(
             'siteUID' => $id,
+            'newUser' => $newUser,
         );
 
         if (null !== $message) {
             $data['cid'] = $message;
+        }
+
+        if (null !== $userInfo) {
+            $data['userInfo'] = json_encode($userInfo);
         }
 
         $request->setContent(http_build_query($data));
@@ -150,7 +188,7 @@ class MessageFactory
 
     public function getRemoveConnectionRequest($token, $uid, $provider = null)
     {
-        $request = new Request(Request::METHOD_POST, '/socialize.removeConnection?'.http_build_query(array(
+        $request = new Request(Request::METHOD_POST, '/socialize.disconnect?'.http_build_query(array(
             'uid'       => $uid,
             'apiKey'    => $this->key,
             'secret'    => $this->secret,
@@ -184,5 +222,53 @@ class MessageFactory
     public function getResponse()
     {
         return new Response();
+    }
+
+    public function getGMchallengeStatusRequest($token, $uid, $details = null, $include = null, $exclude = null)
+    {
+        $request = new Request(Request::METHOD_POST, '/gm.getChallengeStatus?'.http_build_query(array(
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->gmhost);
+
+        $data = array(
+            'uid'   => $uid,
+        );
+
+        if (null != $details) {
+            $data['details'] = 'full';
+        }
+
+        if (null !== $include) {
+            $data['includeChallenges'] = $include;
+        }
+
+        if (null !== $exclude) {
+            $data['excludeChallenges'] = $exclude;
+        }
+
+        $request->setContent(http_build_query($data));
+
+        return $request;
+    }
+    public function getNotifyActionRequest($token, $uid, $action)
+    {
+        $request = new Request(Request::METHOD_POST, '/gm.notifyAction?'.http_build_query(array(
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->gmhost);
+
+        $data = array(
+            'uid'   => $uid,
+            'action'   => $action,
+        );
+
+        $request->setContent(http_build_query($data));
+
+        return $request;
     }
 }

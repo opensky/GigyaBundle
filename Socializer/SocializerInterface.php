@@ -14,4 +14,5 @@ interface SocializerInterface
     function getUser($token);
     function getSessionInfo($uid, $provider);
     function notifyRegistration($token, $uid, $id, $message = null);
+    function deleteAccount($token, $id, $message = null);
 }
