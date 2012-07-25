@@ -15,12 +15,12 @@ class MessageFactory
     private $redirectUri;
     private $code;
 
-    public function __construct($key, $secret, $host)
+    public function __construct($key, $secret, $host, $gmhost)
     {
         $this->key              = $key;
         $this->secret           = $secret;
         $this->host             = $host;
-        // $this->gmhost           = $gmhost;
+        $this->gmhost           = $gmhost;
     }
 
     public function setRedirectUri($redirectUri)
