@@ -71,12 +71,13 @@ class GigyaProvider implements AuthenticationProviderInterface
 
         try {
             $loaded = $this->userProvider->loadUserByUsername($user->getUsername());
+            
+            if (! $loaded instanceof UserInterface) {
+                throw new \RuntimeException('User provider did not return an implementation of account interface.');
+            }
+
         } catch (UsernameNotFoundException $e) {
             return $token;
-        }
-
-        if (! $loaded instanceof UserInterface) {
-            throw new \RuntimeException('User provider did not return an implementation of account interface.');
         }
 
         $this->userChecker->checkPreAuth($loaded);
