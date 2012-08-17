@@ -69,12 +69,11 @@ class MessageFactory
         return $request;
     }
 
-    public function getAccessTokenRequest($code = null)
+    public function getAccessTokenRequest($code = null, $params = array())
     {
         $request = new Request(Request::METHOD_POST, '/socialize.getToken?client_id='.$this->key.'&client_secret='.$this->secret, $this->host);
 
         if (null !== $code) {
-
             $data = array(
                 'grant_type'   => 'authorization_code',
                 'code'         => $code,
@@ -83,11 +82,9 @@ class MessageFactory
                 $data['redirect_uri'] = $this->redirectUri;
             }
             $request->setContent(http_build_query($data));
-
         } else {
-            $request->setContent(http_build_query(array(
-                'grant_type'   => 'none',
-            )));
+            $query_params = array_merge(array('grant_type' => 'none'), $params);
+            $request->setContent(http_build_query($query_params));
         }
 
         return $request;
@@ -268,6 +265,27 @@ class MessageFactory
         );
 
         $request->setContent(http_build_query($data));
+
+        return $request;
+    }
+
+    public function getFriendsInfoRequest($uid, $token, $params = array()) {
+        $query = array(
+            'apiKey'      => $this->key,
+            'secret'      => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+            'uid'      => $uid,
+        );
+
+        foreach ($params as $key => $value) {
+            $query[$key] = $value;
+        }
+
+        $request = new Request(Request::METHOD_POST, '/socialize.getFriendsInfo?'.http_build_query($query), $this->host);
+        $request->setContent(http_build_query(array(
+            'format' => 'xml',
+        )));
 
         return $request;
     }

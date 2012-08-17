@@ -107,10 +107,10 @@ class Socializer implements SocializerInterface, UserProviderInterface
     /**
      * @return array|null
      */
-    public function getAccessToken($code = null)
+    public function getAccessToken($code = null, $params = array())
     {
         $response = $this->factory->getResponse();
-        $request  = $this->factory->getAccessTokenRequest($code);
+        $request  = $this->factory->getAccessTokenRequest($code, $params);
 
         $this->client->send($request, $response);
 
@@ -391,6 +391,29 @@ class Socializer implements SocializerInterface, UserProviderInterface
             throw new \Exception($result->errorMessage);
         }
 
+        return $result;
+    }
+    
+    /**
+     * Returns information about user's friends, but only which are also site users
+     */
+    public function getFriendsInfo($uid, $params = array())
+    {
+        $response = $this->factory->getResponse();
+        $request  = $this->factory->getFriendsInfoRequest($uid, $this->getNonce(), $params);
+
+        $this->client->send($request, $response);
+
+        libxml_use_internal_errors(true);
+
+        $result = simplexml_load_string($response->getContent());
+
+        if (!$result) {
+            throw new \Exception('Gigya API returned invalid response');
+        }
+        if ((string) $result->errorCode) {
+            throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorDetails, (string) $result->errorCode);
+        }
         return $result;
     }
 }
