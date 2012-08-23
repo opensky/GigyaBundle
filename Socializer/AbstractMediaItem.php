@@ -11,7 +11,7 @@ abstract class AbstractMediaItem implements MediaItemInterface
     /**
      * @return array $mediaItem
      */
-    abstract protected function toArray();
+    abstract public function toArray();
 
     /**
      * @return json $video

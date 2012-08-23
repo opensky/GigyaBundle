@@ -90,6 +90,32 @@ class Socializer implements SocializerInterface, UserProviderInterface
     }
 
     /**
+     * Publishs a UserAction to specified social networks
+     *
+     * @param UserAction $userAction
+     * @param string $key
+     */
+    public function publishUserActionByKey($key, $uid, $token, $enabledProviders = null, $disabledProviders = null, $target = null, $userLocation = null, $shortURLs = null, $tags = null)
+    {
+        $userAction = $this->userActions[$key];
+        $response = $this->factory->getResponse();
+        $request  = $this->factory->getPublishUserActionRequest($uid, $token, $userAction, $enabledProviders, $disabledProviders, $target, $userLocation, $shortURLs, $tags);
+
+        $this->client->send($request, $response);
+        $result = simplexml_load_string($response->getContent());
+
+        if (!$result) {
+            throw new \Exception('Gigya API returned invalid response');
+        }
+
+        if ((string) $result->errorCode) {
+            throw new \Exception($result->errorMessage);
+        }
+
+        return $result;
+    }
+
+    /**
      * @param string $provider
      * @param string $redirect
      *

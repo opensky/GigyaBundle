@@ -271,4 +271,46 @@ class MessageFactory
 
         return $request;
     }
+
+    public function getPublishUserActionRequest($uid, $token, $userAction, $enabledProviders = null, $disabledProviders = null, $target = null, $userLocation = null, $shortURLs = null, $tags = null) {
+        $request = new Request(Request::METHOD_POST, '/socialize.publishUserAction?'.http_build_query(array(
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->host);
+
+        $data = array(
+            'uid'   => $uid,
+        );
+
+        if (null !== $enabledProviders) {
+            $data['enabledProviders'] = $enabledProviders;
+        }
+
+        if (null !== $disabledProviders) {
+            $data['disabledProviders'] = $disabledProviders;
+        }
+
+        if (null !== $target) {
+            $data['target'] = $target;
+        }
+
+        if (null !== $userLocation) {
+            $data['userLocation'] = $userLocation;
+        }
+
+        if (null !== $shortURLs) {
+            $data['shortURLs'] = $shortURLs;
+        }
+
+        if (null !== $tags) {
+            $data['tags'] = $tags;
+        }
+
+        $data['userAction'] = $userAction->toJson();
+
+        $request->setContent(http_build_query($data));
+        return $request;
+    }
 }
