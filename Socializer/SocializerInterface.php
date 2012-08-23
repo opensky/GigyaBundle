@@ -10,7 +10,7 @@ interface SocializerInterface
     function getUserActionByKey($key);
     function addUserActionByKey($userAction, $key);
     function login($provider);
-    function getAccessToken($code = null);
+    function getAccessToken($code = null, $params = array());
     function getUser($token);
     function getSessionInfo($uid, $provider);
     function notifyRegistration($token, $uid, $id, $message = null);
