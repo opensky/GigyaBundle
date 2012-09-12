@@ -90,6 +90,27 @@ class MessageFactory
         return $request;
     }
 
+    public function setUserInfoRequest($token, $userData)
+    {
+        $query = array(
+            'apiKey'      => $this->key,
+            'secret'      => $this->secret,
+            'nonce'       => $token,
+            'timestamp'   => time(),
+            'uid'         => $userData['id']
+        );
+        unset($userData['id']);
+        $query['userinfo'] = json_encode($userData);
+
+        $request = new Request(Request::METHOD_POST, '/socialize.setUserInfo?'.http_build_query($query), $this->host);
+
+        $request->setContent(http_build_query(array(
+            'format' => 'xml',
+        )));
+
+        return $request;
+    }
+
     public function getUserInfoRequest($token, $uid = null)
     {
         $query = array(

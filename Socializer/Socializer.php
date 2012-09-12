@@ -149,6 +149,28 @@ class Socializer implements SocializerInterface, UserProviderInterface
         return $result;
     }
 
+    public function setUserInfo($token, $userData)
+    {
+        $response = $this->factory->getResponse();
+        $request  = $this->factory->setUserInfoRequest($token, $userData);
+
+        $this->client->send($request, $response);
+
+        libxml_use_internal_errors(true);
+
+        $result = simplexml_load_string($response->getContent());
+
+        if (!$result) {
+            throw new \Exception('Gigya API returned invalid response');
+        }
+
+        if ((string) $result->errorCode) {
+            throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorDetails, (string) $result->errorCode);
+        }
+
+        return $result;
+    }
+
     public function getUserInfo($token, $uid = null)
     {
         $response = $this->factory->getResponse();
