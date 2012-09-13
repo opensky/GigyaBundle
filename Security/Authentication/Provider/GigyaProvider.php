@@ -38,14 +38,14 @@ class GigyaProvider implements AuthenticationProviderInterface
 
     public function authenticate(TokenInterface $token)
     {
-        if (!$this->supports($token)) {
+        if (!$this->supports($token) || (null === $this->userProvider)) {
             return null;
         }
+
         try {
             $accessToken  = $this->socializer->getAccessToken();
             if (null !== $accessToken) {
                 $user = $this->socializer->getUser($accessToken['access_token'], $token->getCredentials());
-
                 return $this->createAuthenticatedToken($user);
             }
         } catch (AuthenticationException $failed) {
@@ -64,20 +64,14 @@ class GigyaProvider implements AuthenticationProviderInterface
 
     private function createAuthenticatedToken(UserInterface $user)
     {
-        $token = new GigyaToken($user, '', $this->providerKey, $user->getRoles());
-        if (null === $this->userProvider) {
-            return $token;
-        }
-
         try {
             $loaded = $this->userProvider->loadUserByUsername($user->getUsername());
-            
+
             if (! $loaded instanceof UserInterface) {
                 throw new \RuntimeException('User provider did not return an implementation of account interface.');
             }
-
         } catch (UsernameNotFoundException $e) {
-            return $token;
+            throw new AuthenticationException($e->getMessage(), $e->getMessage(), $e->getCode(), $e);
         }
 
         $this->userChecker->checkPreAuth($loaded);
