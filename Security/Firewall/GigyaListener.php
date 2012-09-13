@@ -65,8 +65,8 @@ class GigyaListener extends AbstractAuthenticationListener
             }
             try{
                 return $this->authenticationManager->authenticate(new GigyaToken('', $userUid, $this->providerKey));
-            }catch (AuthenticationException $failed) {
-                $request->getSession()->set(SecurityContextInterface::AUTHENTICATION_ERROR, new AuthenticationException('The Gigya user could not be retrieved from the session.'));
+            }catch (AuthenticationException $e) {
+                $request->getSession()->set(SecurityContextInterface::AUTHENTICATION_ERROR, $e);
             }
         }
     }
