@@ -1,5 +1,5 @@
 {
-    "name": "ktreutlein/gigya-bundle",
+    "name": "joiz/gigya-bundle",
     "type": "symfony-bundle",
     "description": "Symfony2 Gigya Bundle",
     "keywords": ["share plugin", "facebook", "twitter", "opensky"],
