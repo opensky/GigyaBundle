@@ -359,7 +359,7 @@ class Socializer implements SocializerInterface, UserProviderInterface
      */
     public function deleteAccount($token, $id, $message = null)
     {
-        $response = $this->factory->getResponse();
+            $response = $this->factory->getResponse();
         $request  = $this->factory->getDeleteAccountRequest($token, $id, $message);
 
         $this->client->send($request, $response);
