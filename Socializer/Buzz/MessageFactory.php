@@ -242,6 +242,24 @@ class MessageFactory
         return new Response();
     }
 
+    public function getGMredeemPoints($token, $uid, $redeemPoints) {
+        $request = new Request(Request::METHOD_POST, '/gm.redeemPoints?'.http_build_query(array(
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->gmhost);
+
+        $data = array(
+            "UID"      => $uid,
+            "challenge"=>"_default",
+            "points"   =>$redeemPoints
+        );
+
+        $request->setContent(http_build_query($data));
+        return $request;
+    }
+
     public function getGMchallengeStatusRequest($token, $uid, $details = null, $include = null, $exclude = null)
     {
         $request = new Request(Request::METHOD_POST, '/gm.getChallengeStatus?'.http_build_query(array(

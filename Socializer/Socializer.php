@@ -359,7 +359,7 @@ class Socializer implements SocializerInterface, UserProviderInterface
      */
     public function deleteAccount($token, $id, $message = null)
     {
-            $response = $this->factory->getResponse();
+        $response = $this->factory->getResponse();
         $request  = $this->factory->getDeleteAccountRequest($token, $id, $message);
 
         $this->client->send($request, $response);
@@ -396,6 +396,25 @@ class Socializer implements SocializerInterface, UserProviderInterface
     public function supportsClass($class)
     {
         return $class === 'OpenSky\Bundle\GigyaBundle\Security\User\User';
+    }
+
+    public function getGMredeemPoints($token, $id, $points) {
+        $response = $this->factory->getResponse();
+        $request  = $this->factory->getGMredeemPoints($token, $id, $points);
+        $this->client->send($request, $response);
+
+        libxml_use_internal_errors(true);
+
+        $result = json_decode($response->getContent());
+
+        if (!$result) {
+            throw new \Exception('Gigya API returned invalid response');
+        }
+
+        if ((string) $result->errorCode) {
+            throw new \Exception($result->errorMessage);
+        }
+        return $result;
     }
 
     public function getGMchallengeStatus($token, $id, $details = null, $include = null, $exclude = null)
