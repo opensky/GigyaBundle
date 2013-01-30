@@ -8,7 +8,7 @@
         <parameter key="gigya.socializer.providers" type="collection" />
         <parameter key="gigya.socializer.secret" type="string" />
         <parameter key="gigya.socializer.redirect_route" type="string" />
-        <parameter key="gigya.api.client.class">Buzz\Client\FileGetContents</parameter>
+        <parameter key="gigya.api.client.class">Buzz\Client\Curl</parameter>
         <parameter key="gigya.api.message_factory.class">OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory</parameter>
         <parameter key="gigya.api.host">https://socialize.gigya.com</parameter>
         <parameter key="gigya.api.gmhost">https://gm.gigya.com</parameter>
