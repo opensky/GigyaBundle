@@ -460,14 +460,14 @@ class Socializer implements SocializerInterface, UserProviderInterface
 
         return $result;
     }
-    
+
     /**
      * Returns information about user's friends, but only which are also site users
      */
-    public function getFriendsInfo($uid, $params = array())
+    public function getFriendsInfo($token, $uid, $params = array())
     {
         $response = $this->factory->getResponse();
-        $request  = $this->factory->getFriendsInfoRequest($uid, $this->getNonce(), $params);
+        $request  = $this->factory->getFriendsInfoRequest($token, $uid, $params);
 
         $this->client->send($request, $response);
 

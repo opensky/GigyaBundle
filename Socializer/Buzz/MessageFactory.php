@@ -350,24 +350,21 @@ class MessageFactory
         return $request;
     }
 
-    public function getFriendsInfoRequest($uid, $token, $params = array()) {
-        $query = array(
+    public function getFriendsInfoRequest($token, $uid, $params = array()) {
+        $request = new Request(Request::METHOD_POST, '/socialize.getFriendsInfo?'.http_build_query(array(
             'apiKey'      => $this->key,
             'secret'      => $this->secret,
             'nonce'     => $token,
             'timestamp' => time(),
-            'uid'      => $uid,
-        );
+            'uid'      => $uid
+        )), $this->host);
 
+        $data = array();
         foreach ($params as $key => $value) {
-            $query[$key] = $value;
+            $data[$key] = $value;
         }
 
-        $request = new Request(Request::METHOD_POST, '/socialize.getFriendsInfo?'.http_build_query($query), $this->host);
-        $request->setContent(http_build_query(array(
-            'format' => 'xml',
-        )));
-
+        $request->setContent(http_build_query($data));
         return $request;
     }
 }
