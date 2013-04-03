@@ -31,7 +31,6 @@ class MessageFactory
     public function getDeleteAccountRequest($token, $id, $message = null)
     {
         $request = new Request(Request::METHOD_POST, '/socialize.deleteAccount?'.http_build_query(array(
-            'uid'       => $id,
             'apiKey'    => $this->key,
             'secret'    => $this->secret,
             'nonce'     => $token,
@@ -39,7 +38,7 @@ class MessageFactory
         )), $this->host);
 
         $data = array(
-            'uid' => $id,
+            'uid' => $id
         );
 
         if (null !== $message) {
