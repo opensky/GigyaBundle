@@ -51,7 +51,7 @@ class GigyaProvider implements AuthenticationProviderInterface
         } catch (AuthenticationException $failed) {
             throw $failed;
         } catch (\Exception $failed) {
-            throw new AuthenticationException('Unknown error', $failed->getMessage(), $failed->getCode(), $failed);
+            throw new AuthenticationException($failed->getMessage(), $failed->getCode(), $failed);
         }
 
         throw new AuthenticationException('The Gigya user could not be retrieved from the session.');
@@ -60,7 +60,7 @@ class GigyaProvider implements AuthenticationProviderInterface
     public function supports(TokenInterface $token)
     {
         return $token instanceof GigyaToken && $this->providerKey === $token->getProviderKey();
-    } 
+    }
 
     private function createAuthenticatedToken(UserInterface $user)
     {
@@ -71,7 +71,7 @@ class GigyaProvider implements AuthenticationProviderInterface
                 throw new \RuntimeException('User provider did not return an implementation of account interface.');
             }
         } catch (UsernameNotFoundException $e) {
-            throw new AuthenticationException($e->getMessage(), $e->getMessage(), $e->getCode(), $e);
+            throw new AuthenticationException($e->getMessage(), $e->getCode(), $e);
         }
 
         $this->userChecker->checkPreAuth($loaded);

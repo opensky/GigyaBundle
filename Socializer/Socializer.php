@@ -2,6 +2,7 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Socializer;
 
+use Buzz\Client\AbstractClient;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Buzz\Client\ClientInterface;
@@ -26,11 +27,21 @@ class Socializer implements SocializerInterface, UserProviderInterface
     private $apiKey;
     private $providers = array();
     private $userActions = array();
+    /**
+     * @var AbstractClient
+     */
     private $client;
     private $factory;
 
+    /**
+     * @param $apiKey
+     * @param array $providers
+     * @param ClientInterface|AbstractClient $client
+     * @param MessageFactory $factory
+     */
     public function __construct($apiKey, array $providers = array(), ClientInterface $client, MessageFactory $factory)
     {
+        $client->setTimeout(2);
         $this->apiKey    = (string) $apiKey;
         $this->providers = $providers;
         $this->client    = $client;
@@ -92,8 +103,17 @@ class Socializer implements SocializerInterface, UserProviderInterface
     /**
      * Publishs a UserAction to specified social networks
      *
-     * @param UserAction $userAction
      * @param string $key
+     * @param $uid
+     * @param $token
+     * @param null $enabledProviders
+     * @param null $disabledProviders
+     * @param null $target
+     * @param null $userLocation
+     * @param null $shortURLs
+     * @param null $tags
+     * @throws \Exception
+     * @return \SimpleXMLElement
      */
     public function publishUserActionByKey($key, $uid, $token, $enabledProviders = null, $disabledProviders = null, $target = null, $userLocation = null, $shortURLs = null, $tags = null)
     {
@@ -117,9 +137,8 @@ class Socializer implements SocializerInterface, UserProviderInterface
 
     /**
      * @param string $provider
-     * @param string $redirect
      *
-     * @return Buzz\Message\Response
+     * @return Response
      */
     public function login($provider)
     {
@@ -131,6 +150,8 @@ class Socializer implements SocializerInterface, UserProviderInterface
     }
 
     /**
+     * @param null $code
+     * @param array $params
      * @return array|null
      */
     public function getAccessToken($code = null, $params = array())
@@ -165,7 +186,7 @@ class Socializer implements SocializerInterface, UserProviderInterface
         }
 
         if ((string) $result->errorCode) {
-            throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorDetails, (string) $result->errorCode);
+            throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorCode);
         }
 
         return $result;
@@ -187,7 +208,7 @@ class Socializer implements SocializerInterface, UserProviderInterface
         }
 
         if ((string) $result->errorCode) {
-            throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorDetails, (string) $result->errorCode);
+            throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorCode);
         }
 
         return $result;
@@ -479,7 +500,7 @@ class Socializer implements SocializerInterface, UserProviderInterface
             throw new \Exception('Gigya API returned invalid response');
         }
         if ((string) $result->errorCode) {
-            throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorDetails, (string) $result->errorCode);
+            throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorCode);
         }
         return $result;
     }

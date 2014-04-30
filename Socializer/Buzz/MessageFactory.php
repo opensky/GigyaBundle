@@ -4,7 +4,6 @@ namespace OpenSky\Bundle\GigyaBundle\Socializer\Buzz;
 
 use Buzz\Message\Response;
 use Buzz\Message\Request;
-use Symfony\Component\Routing\RouterInterface;
 
 class MessageFactory
 {
@@ -13,7 +12,6 @@ class MessageFactory
     private $gmhost;
     private $secret;
     private $redirectUri;
-    private $code;
 
     public function __construct($key, $secret, $host, $gmhost)
     {
