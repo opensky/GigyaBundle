@@ -55,7 +55,9 @@ class GigyaListener extends AbstractAuthenticationListener
         $code = $request->query->get('code');
 
         if (null !== $code) {
-            $this->factory->setRedirectUri($this->router->generate($this->route, array(), true));
+            if ($this->route) {
+                $this->factory->setRedirectUri($this->router->generate($this->route, array(), true));
+            }
 
             return $this->authenticationManager->authenticate(new GigyaToken('', $code, $this->providerKey));
         }

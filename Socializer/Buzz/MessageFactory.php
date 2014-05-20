@@ -30,12 +30,15 @@ class MessageFactory
     {
         $request = new Request(Request::METHOD_POST, '/socialize.login', $this->host);
 
-        $request->setContent(http_build_query(array(
+        $data = array(
             'x_provider'    => $provider,
             'client_id'     => $this->key,
-            'redirect_uri'  => $this->redirectUri,
             'response_type' => 'code'
-        )));
+        );
+        if ($this->redirectUri) {
+            $data['redirect_uri'] = $this->redirectUri;
+        }
+        $request->setContent(http_build_query($data));
 
         return $request;
     }
@@ -45,11 +48,14 @@ class MessageFactory
         $request = new Request(Request::METHOD_POST, '/socialize.getToken?client_id='.$this->key.'&client_secret='.$this->secret, $this->host);
 
         if (null !== $code) {
-            $request->setContent(http_build_query(array(
+            $data = array(
                 'grant_type'   => 'authorization_code',
                 'code'         => $code,
-                'redirect_uri' => $this->redirectUri,
-            )));
+            );
+            if ($this->redirectUri) {
+                $data['redirect_uri'] = $this->redirectUri;
+            }
+            $request->setContent(http_build_query($data));
         } else {
             $request->setContent(http_build_query(array(
                 'grant_type'   => 'none',
