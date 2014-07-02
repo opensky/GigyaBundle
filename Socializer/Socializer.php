@@ -9,7 +9,6 @@ use Buzz\Client\ClientInterface;
 use Buzz\Message\Response;
 use OpenSky\Bundle\GigyaBundle\Security\User\User;
 use OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory;
-use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -495,7 +494,6 @@ class Socializer implements SocializerInterface, UserProviderInterface
         libxml_use_internal_errors(true);
 
         $result = simplexml_load_string($response->getContent());
-
         if (!$result) {
             throw new \Exception('Gigya API returned invalid response');
         }
@@ -504,4 +502,29 @@ class Socializer implements SocializerInterface, UserProviderInterface
         }
         return $result;
     }
+
+    /**
+     * @param $token
+     * @param array $params
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getComments($token, $params = array())
+	{
+		$response = $this->factory->getResponse();
+		$request  = $this->factory->getCommentRequst($token, $params);
+
+		$this->client->send($request, $response);
+
+		libxml_use_internal_errors(true);
+
+		$result = json_decode($response->getContent());
+		if (!$result) {
+			throw new \Exception('Gigya API returned invalid response');
+		}
+		if ((string) $result->errorCode) {
+			throw new AuthenticationException((string) $result->errorMessage, (string) $result->errorCode);
+		}
+		return $result;
+	}
 }

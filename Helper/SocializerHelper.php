@@ -2,7 +2,8 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Helper;
 
-use OpenSky\Bundle\GigyaBundle\Socializer\Socializer;
+use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
+use OpenSky\Bundle\GigyaBundle\Socializer\SocializerInterface;
 use Symfony\Component\Templating\Helper\Helper;
 
 class SocializerHelper extends Helper
@@ -10,7 +11,7 @@ class SocializerHelper extends Helper
     private $socializer;
     private $namespace;
 
-    public function __construct(Socializer $socializer, $namespace)
+    public function __construct(SocializerInterface $socializer, $namespace)
     {
         $this->namespace  = $namespace;
         $this->socializer = $socializer;
@@ -76,13 +77,14 @@ class SocializerHelper extends Helper
 
     /**
      * @param string $key
-     * @return AntiMattr\GigyaBundle\Socializer\UserAction $userAction
+     * @return UserAction $userAction
      */
     public function getUserActionByKey($key)
     {
         if ($this->socializer->hasUserActionByKey($key)) {
             return $this->socializer->getUserActionByKey($key);
         }
+        return false;
     }
 
     public function getName()

@@ -4,6 +4,7 @@ namespace OpenSky\Bundle\GigyaBundle\Socializer\Buzz;
 
 use Buzz\Message\Response;
 use Buzz\Message\Request;
+use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 
 class MessageFactory
 {
@@ -12,13 +13,15 @@ class MessageFactory
     private $gmhost;
     private $secret;
     private $redirectUri;
+    private $commenthost;
 
-    public function __construct($key, $secret, $host, $gmhost)
+    public function __construct($key, $secret, $host, $gmhost, $commenthost)
     {
         $this->key              = $key;
         $this->secret           = $secret;
         $this->host             = $host;
         $this->gmhost           = $gmhost;
+        $this->commenthost      = $commenthost;
     }
 
     public function setRedirectUri($redirectUri)
@@ -305,6 +308,18 @@ class MessageFactory
         return $request;
     }
 
+    /**
+     * @param $uid
+     * @param $token
+     * @param $userAction UserAction
+     * @param null $enabledProviders
+     * @param null $disabledProviders
+     * @param null $target
+     * @param null $userLocation
+     * @param null $shortURLs
+     * @param null $tags
+     * @return Request
+     */
     public function getPublishUserActionRequest($uid, $token, $userAction, $enabledProviders = null, $disabledProviders = null, $target = null, $userLocation = null, $shortURLs = null, $tags = null) {
         $request = new Request(Request::METHOD_POST, '/socialize.publishUserAction?'.http_build_query(array(
             'apiKey'    => $this->key,
@@ -355,6 +370,23 @@ class MessageFactory
             'timestamp' => time(),
             'uid'      => $uid
         )), $this->host);
+
+        $data = array();
+        foreach ($params as $key => $value) {
+            $data[$key] = $value;
+        }
+
+        $request->setContent(http_build_query($data));
+        return $request;
+    }
+
+    public function getCommentRequst($token, $params = array()) {
+        $request = new Request(Request::METHOD_POST, '/comments.getComments?'.http_build_query(array(
+            'apiKey'      => $this->key,
+            'secret'      => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time()
+        )), $this->commenthost);
 
         $data = array();
         foreach ($params as $key => $value) {
