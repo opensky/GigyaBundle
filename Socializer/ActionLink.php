@@ -2,7 +2,7 @@
 
 namespace OpenSky\Bundle\GigyaBundle\Socializer;
 
-class ActionLink
+class ActionLink extends AbstractMediaItem
 {
     private $destination;
     private $title;
@@ -27,5 +27,20 @@ class ActionLink
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @return array $link
+     */
+    public function toArray()
+    {
+        $array = array();
+        if ($destination = $this->getDestination()) {
+            $array['href'] = $destination;
+        }
+        if ($title = $this->getTitle()) {
+            $array['text'] = $title;
+        }
+        return $array;
     }
 }

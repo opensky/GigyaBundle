@@ -9,7 +9,7 @@ interface MediaItemInterface
     const VIDEO = 'flash';
 
     /**
-     * @return json $mediaItem
+     * @return $mediaItem
      */
     public function toJson();
 

@@ -5,6 +5,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
+use Symfony\Component\HttpFoundation\Request;
 use OpenSky\Bundle\GigyaBundle\Security\Authentication\Token\GigyaToken;
 use OpenSky\Bundle\GigyaBundle\Socializer\SocializerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -37,21 +38,20 @@ class GigyaProvider implements AuthenticationProviderInterface
 
     public function authenticate(TokenInterface $token)
     {
-        if (!$this->supports($token)) {
+        if (!$this->supports($token) || (null === $this->userProvider)) {
             return null;
         }
 
         try {
-            $accessToken  = $this->socializer->getAccessToken($token->getCredentials());
-
+            $accessToken  = $this->socializer->getAccessToken();
             if (null !== $accessToken) {
-                $user = $this->socializer->getUser($accessToken['access_token']);
+                $user = $this->socializer->getUser($accessToken['access_token'], $token->getCredentials());
                 return $this->createAuthenticatedToken($user);
             }
         } catch (AuthenticationException $failed) {
             throw $failed;
         } catch (\Exception $failed) {
-            throw new AuthenticationException('Unknown error', $failed->getMessage(), $failed->getCode(), $failed);
+            throw new AuthenticationException($failed->getMessage(), $failed->getCode(), $failed);
         }
 
         throw new AuthenticationException('The Gigya user could not be retrieved from the session.');
@@ -64,20 +64,14 @@ class GigyaProvider implements AuthenticationProviderInterface
 
     private function createAuthenticatedToken(UserInterface $user)
     {
-        $token = new GigyaToken($user, '', $this->providerKey, $user->getRoles());
-
-        if (null === $this->userProvider) {
-            return $token;
-        }
-
         try {
             $loaded = $this->userProvider->loadUserByUsername($user->getUsername());
-        } catch (UsernameNotFoundException $e) {
-            return $token;
-        }
 
-        if (! $loaded instanceof UserInterface) {
-            throw new \RuntimeException('User provider did not return an implementation of account interface.');
+            if (! $loaded instanceof UserInterface) {
+                throw new \RuntimeException('User provider did not return an implementation of account interface.');
+            }
+        } catch (UsernameNotFoundException $e) {
+            throw new AuthenticationException($e->getMessage(), $e->getCode(), $e);
         }
 
         $this->userChecker->checkPreAuth($loaded);

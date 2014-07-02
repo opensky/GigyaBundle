@@ -12,6 +12,47 @@ class UserAction
     private $userMessage;
 
     /**
+     * convert UserAction object to Json object
+     */
+    public function toJson()
+    {
+        $userAction = array();
+
+        if (null != $this->getUserMessage()) {
+            $userAction['userMessage'] = $this->getUserMessage();
+        }
+
+        if (null != $this->getTitle()) {
+            $userAction['title'] = $this->getTitle();
+        }
+
+        if (null != $this->getLinkBack()) {
+            $userAction['linkBack'] = $this->getLinkBack();
+        }
+
+        if (null != $this->getDescription()) {
+            $userAction['description'] = $this->getDescription();
+        }
+
+        if (null != $this->actionLinks) {
+            $userAction['actionLinks'] = array();
+            foreach($this->actionLinks as $a) {
+                array_push($userAction['actionLinks'], $a->toArray());
+            }
+        }
+
+        if (null != $this->mediaItems) {
+            // note that you can only share one media type at once
+            $userAction['mediaItems'] = array();
+            foreach($this->mediaItems as $m) {
+                array_push($userAction['mediaItems'], $m->toArray());
+            }
+        }
+
+        return json_encode($userAction);
+    }
+
+    /**
      * @param ActionLink $actionLink
      */
     public function addActionLink(ActionLink $actionLink)

@@ -14,7 +14,7 @@ class Image extends AbstractMediaItem
     /**
      * @return array $video
      */
-    protected function toArray()
+    public function toArray()
     {
         $array = array();
         if ($href = $this->getHref()) {

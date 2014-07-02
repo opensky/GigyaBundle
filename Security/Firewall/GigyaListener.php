@@ -7,6 +7,8 @@ use OpenSky\Bundle\GigyaBundle\Socializer\Buzz\MessageFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 
 class GigyaListener extends AbstractAuthenticationListener
 {
@@ -52,12 +54,20 @@ class GigyaListener extends AbstractAuthenticationListener
 
     protected function attemptAuthentication(Request $request)
     {
-        $code = $request->query->get('code');
+        $userUid = $request->request->get('gigya_user_uid');
+        if (null !== $userUid) {
+            if ($this->route) {
+                $this->factory->setRedirectUri($this->router->generate($this->route, array(), true));
+            }
 
-        if (null !== $code) {
-            $this->factory->setRedirectUri($this->router->generate($this->route, array(), true));
-
-            return $this->authenticationManager->authenticate(new GigyaToken('', $code, $this->providerKey));
+            if (null !== $request->request->get('linking_gigya_uid')) {
+                $userUid = $request->request->get('linking_gigya_uid');
+            }
+            try{
+                return $this->authenticationManager->authenticate(new GigyaToken('', $userUid, $this->providerKey));
+            }catch (AuthenticationException $e) {
+                $request->getSession()->set(SecurityContextInterface::AUTHENTICATION_ERROR, $e);
+            }
         }
     }
 }

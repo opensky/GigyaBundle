@@ -4,21 +4,24 @@ namespace OpenSky\Bundle\GigyaBundle\Socializer\Buzz;
 
 use Buzz\Message\Response;
 use Buzz\Message\Request;
-use Symfony\Component\Routing\RouterInterface;
+use OpenSky\Bundle\GigyaBundle\Socializer\UserAction;
 
 class MessageFactory
 {
     private $key;
     private $host;
+    private $gmhost;
     private $secret;
     private $redirectUri;
-    private $code;
+    private $commenthost;
 
-    public function __construct($key, $secret, $host)
+    public function __construct($key, $secret, $host, $gmhost, $commenthost)
     {
-        $this->key      = $key;
-        $this->secret   = $secret;
-        $this->host     = $host;
+        $this->key              = $key;
+        $this->secret           = $secret;
+        $this->host             = $host;
+        $this->gmhost           = $gmhost;
+        $this->commenthost      = $commenthost;
     }
 
     public function setRedirectUri($redirectUri)
@@ -26,35 +29,84 @@ class MessageFactory
         $this->redirectUri = $redirectUri;
     }
 
-    public function getLoginRequest($provider)
+    public function getDeleteAccountRequest($token, $id, $message = null)
     {
-        $request = new Request(Request::METHOD_POST, '/socialize.login', $this->host);
+        $request = new Request(Request::METHOD_POST, '/socialize.deleteAccount?'.http_build_query(array(
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->host);
 
-        $request->setContent(http_build_query(array(
-            'x_provider'    => $provider,
-            'client_id'     => $this->key,
-            'redirect_uri'  => $this->redirectUri,
-            'response_type' => 'code'
-        )));
+        $data = array(
+            'uid' => $id
+        );
+
+        if (null !== $message) {
+            $data['cid'] = $message;
+        }
+
+        $request->setContent(http_build_query($data));
 
         return $request;
     }
 
-    public function getAccessTokenRequest($code = null)
+
+    public function getLoginRequest($provider)
+    {
+        $request = new Request(Request::METHOD_POST, '/socialize.login', $this->host);
+
+        $data = array(
+            'x_provider'    => $provider,
+            'client_id'     => $this->key,
+            'response_type' => 'code'
+        );
+        if ($this->redirectUri) {
+            $data['redirect_uri'] = $this->redirectUri;
+        }
+        $request->setContent(http_build_query($data));
+
+        return $request;
+    }
+
+    public function getAccessTokenRequest($code = null, $params = array())
     {
         $request = new Request(Request::METHOD_POST, '/socialize.getToken?client_id='.$this->key.'&client_secret='.$this->secret, $this->host);
 
         if (null !== $code) {
-            $request->setContent(http_build_query(array(
+            $data = array(
                 'grant_type'   => 'authorization_code',
                 'code'         => $code,
-                'redirect_uri' => $this->redirectUri,
-            )));
+            );
+            if ($this->redirectUri) {
+                $data['redirect_uri'] = $this->redirectUri;
+            }
+            $request->setContent(http_build_query($data));
         } else {
-            $request->setContent(http_build_query(array(
-                'grant_type'   => 'none',
-            )));
+            $query_params = array_merge(array('grant_type' => 'none'), $params);
+            $request->setContent(http_build_query($query_params));
         }
+
+        return $request;
+    }
+
+    public function setUserInfoRequest($token, $userData)
+    {
+        $query = array(
+            'apiKey'      => $this->key,
+            'secret'      => $this->secret,
+            'nonce'       => $token,
+            'timestamp'   => time(),
+            'uid'         => $userData['id']
+        );
+        unset($userData['id']);
+        $query['userinfo'] = json_encode($userData);
+
+        $request = new Request(Request::METHOD_POST, '/socialize.setUserInfo?'.http_build_query($query), $this->host);
+
+        $request->setContent(http_build_query(array(
+            'format' => 'xml',
+        )));
 
         return $request;
     }
@@ -125,10 +177,9 @@ class MessageFactory
         return $request;
     }
 
-    public function getNotifyLoginRequest($token, $id, $message = null)
+    public function getNotifyLoginRequest($token, $id, $newUser = false, $message = null, $userInfo = null)
     {
         $request = new Request(Request::METHOD_POST, '/socialize.notifyLogin?'.http_build_query(array(
-            'uid'       => $id,
             'apiKey'    => $this->key,
             'secret'    => $this->secret,
             'nonce'     => $token,
@@ -137,10 +188,15 @@ class MessageFactory
 
         $data = array(
             'siteUID' => $id,
+            'newUser' => $newUser,
         );
 
         if (null !== $message) {
             $data['cid'] = $message;
+        }
+
+        if (null !== $userInfo) {
+            $data['userInfo'] = json_encode($userInfo);
         }
 
         $request->setContent(http_build_query($data));
@@ -184,5 +240,160 @@ class MessageFactory
     public function getResponse()
     {
         return new Response();
+    }
+
+    public function getGMredeemPoints($token, $uid, $redeemPoints) {
+        $request = new Request(Request::METHOD_POST, '/gm.redeemPoints?'.http_build_query(array(
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->gmhost);
+
+        $data = array(
+            "UID"      => $uid,
+            "challenge"=>"_default",
+            "points"   =>$redeemPoints
+        );
+
+        $request->setContent(http_build_query($data));
+        return $request;
+    }
+
+    public function getGMchallengeStatusRequest($token, $uid, $details = null, $include = null, $exclude = null)
+    {
+        $request = new Request(Request::METHOD_POST, '/gm.getChallengeStatus?'.http_build_query(array(
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->gmhost);
+
+        $data = array(
+            'uid'   => $uid,
+        );
+
+        if (null != $details) {
+            $data['details'] = 'full';
+        }
+
+        if (null !== $include) {
+            $data['includeChallenges'] = $include;
+        }
+
+        if (null !== $exclude) {
+            $data['excludeChallenges'] = $exclude;
+        }
+
+        $request->setContent(http_build_query($data));
+
+        return $request;
+    }
+    public function getNotifyActionRequest($token, $uid, $action)
+    {
+        $request = new Request(Request::METHOD_POST, '/gm.notifyAction?'.http_build_query(array(
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->gmhost);
+
+        $data = array(
+            'uid'   => $uid,
+            'action'   => $action,
+        );
+
+        $request->setContent(http_build_query($data));
+
+        return $request;
+    }
+
+    /**
+     * @param $uid
+     * @param $token
+     * @param $userAction UserAction
+     * @param null $enabledProviders
+     * @param null $disabledProviders
+     * @param null $target
+     * @param null $userLocation
+     * @param null $shortURLs
+     * @param null $tags
+     * @return Request
+     */
+    public function getPublishUserActionRequest($uid, $token, $userAction, $enabledProviders = null, $disabledProviders = null, $target = null, $userLocation = null, $shortURLs = null, $tags = null) {
+        $request = new Request(Request::METHOD_POST, '/socialize.publishUserAction?'.http_build_query(array(
+            'apiKey'    => $this->key,
+            'secret'    => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+        )), $this->host);
+
+        $data = array(
+            'uid'   => $uid,
+        );
+
+        if (null !== $enabledProviders) {
+            $data['enabledProviders'] = $enabledProviders;
+        }
+
+        if (null !== $disabledProviders) {
+            $data['disabledProviders'] = $disabledProviders;
+        }
+
+        if (null !== $target) {
+            $data['target'] = $target;
+        }
+
+        if (null !== $userLocation) {
+            $data['userLocation'] = $userLocation;
+        }
+
+        if (null !== $shortURLs) {
+            $data['shortURLs'] = $shortURLs;
+        }
+
+        if (null !== $tags) {
+            $data['tags'] = $tags;
+        }
+
+        $data['userAction'] = $userAction->toJson();
+
+        $request->setContent(http_build_query($data));
+        return $request;
+    }
+
+    public function getFriendsInfoRequest($token, $uid, $params = array()) {
+        $request = new Request(Request::METHOD_POST, '/socialize.getFriendsInfo?'.http_build_query(array(
+            'apiKey'      => $this->key,
+            'secret'      => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time(),
+            'uid'      => $uid
+        )), $this->host);
+
+        $data = array();
+        foreach ($params as $key => $value) {
+            $data[$key] = $value;
+        }
+
+        $request->setContent(http_build_query($data));
+        return $request;
+    }
+
+    public function getCommentRequst($token, $params = array()) {
+        $request = new Request(Request::METHOD_POST, '/comments.getComments?'.http_build_query(array(
+            'apiKey'      => $this->key,
+            'secret'      => $this->secret,
+            'nonce'     => $token,
+            'timestamp' => time()
+        )), $this->commenthost);
+
+        $data = array();
+        foreach ($params as $key => $value) {
+            $data[$key] = $value;
+        }
+
+        $request->setContent(http_build_query($data));
+        return $request;
     }
 }
